@@ -1,12 +1,10 @@
 ---
 const { command } = Astro.props;
 const locale = (Astro.currentLocale || "en").toLowerCase();
-const copyHint = locale === "zh-cn" ? "复制链接" : "Copy link";
+const copyHint = locale === "zh-cn" ? "点击复制命令" : "Click to copy";
 const copiedText = locale === "zh-cn" ? "已复制!" : "Copied!";
 
-// Extract URL from command for clipboard
-const urlMatch = command.match(/https?:\/\/[^\s)]+/);
-const copyUrl = urlMatch ? urlMatch[0] : command;
+const copyUrl = command;
 
 // Simple bash tokenizer
 function highlight(cmd: string): string {

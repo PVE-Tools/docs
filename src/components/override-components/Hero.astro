@@ -2,10 +2,13 @@
 import Search from "./Search.astro";
 
 import config from "@/config/config.json" assert { type: "json" };
+import logoLight from "/src/assets/pve-logo.svg";
+import logoDark from "/src/assets/pve-logo-dark.svg";
+
 const { data } = Astro.locals.starlightRoute.entry;
 const { title = data.title, tagline, actions } = data.hero || {};
-const heroIconLight = config.site.logo || "";
-const heroIconDark = config.site.logo_darkmode || "";
+const heroIconLight = logoLight.src;
+const heroIconDark = logoDark.src;
 
 // check if 404 page
 const is404 = Astro.locals.starlightRoute?.id === "404";
