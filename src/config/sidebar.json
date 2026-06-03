@@ -1,0 +1,56 @@
+{
+  "main": [
+    {
+      "label": "Getting Started",
+      "translations": {
+        "zh-CN": "开始使用"
+      },
+      "items": [
+        { "label": "Usage Guide", "slug": "guide", "translations": { "zh-CN": "使用指南" } },
+        { "label": "Features", "slug": "features", "translations": { "zh-CN": "功能特性" } },
+        { "label": "Submit Plugin", "slug": "submit-plugin", "translations": { "zh-CN": "提交插件" } },
+        { "label": "FAQ", "slug": "faq", "translations": { "zh-CN": "常见问题" } },
+        { "label": "Archival Notice", "slug": "eol", "translations": { "zh-CN": "归档说明" } }
+      ]
+    },
+    {
+      "label": "Advanced Tutorials",
+      "translations": {
+        "zh-CN": "高级教程"
+      },
+      "autogenerate": { "directory": "advanced" }
+    },
+    {
+      "label": "Updates & Roadmap",
+      "translations": {
+        "zh-CN": "更新与计划"
+      },
+      "items": [
+        { "label": "Changelog", "slug": "update", "translations": { "zh-CN": "更新日志" } },
+        { "label": "Roadmap", "slug": "todo", "translations": { "zh-CN": "开发计划" } }
+      ]
+    },
+    {
+      "label": "Legal",
+      "translations": {
+        "zh-CN": "法律条款"
+      },
+      "items": [
+        { "label": "User Agreement (ULA/TOS)", "slug": "ula", "translations": { "zh-CN": "用户协议 (ULA/TOS)" } },
+        { "label": "Privacy Policy", "slug": "privacy-policy", "translations": { "zh-CN": "隐私政策" } },
+        { "label": "服务条款 (Shell 版本)", "slug": "old-tos", "translations": { "zh-CN": "服务条款 (Shell 版本)" } },
+        { "label": "用户协议 (Shell 版本)", "slug": "old-ula", "translations": { "zh-CN": "用户协议 (Shell 版本)" } }
+      ]
+    },
+    {
+      "label": "Sponsorship",
+      "translations": {
+        "zh-CN": "赞助与支持"
+      },
+      "items": [
+        { "label": "Sponsor", "slug": "sponsor", "translations": { "zh-CN": "赞助" } },
+        { "label": "Paid Support", "slug": "pay", "translations": { "zh-CN": "付费支持" } }
+      ]
+    }
+  ]
+}

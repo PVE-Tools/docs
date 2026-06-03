@@ -1,0 +1,174 @@
+---
+import { Icon as StarlightIcon } from "@astrojs/starlight/components";
+import { Icon as LucideIcon } from "astro-icon/components";
+
+const { icon, title, iconColor, size = "large" } = Astro.props;
+const isLucide = icon?.startsWith("lucide:");
+---
+
+<article
+  class={`card bg-lightmode-dark dark:bg-dark group ${size === "sm" ? "p-5" : "p-6"}`}
+>
+  <div class="card-title-row">
+    {
+      icon && isLucide ? (
+        <LucideIcon
+          name={icon}
+          class="icon shrink-0"
+          size="1.5rem"
+          color={iconColor}
+        />
+      ) : icon && (
+        <StarlightIcon
+          name={icon}
+          class="icon shrink-0"
+          size="1.5rem"
+          color={iconColor}
+        />
+      )
+    }
+    <p class="title">
+      <span set:html={title} />
+    </p>
+  </div>
+  <div class="body"><slot /></div>
+  <div class="card-bottom">
+    <p class="module-footer"><em><slot name="footer" /></em></p>
+    {
+      size !== "sm" && (
+        <div class="arrow-btn">
+          <svg
+            class="transition-transform duration-300 group-hover:translate-x-0.5"
+            width="14"
+            height="14"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10.3209 0.715753L17.3509 7.84376C17.7823 8.28117 17.7823 8.99035 17.3509 9.42776L10.3209 16.5558C9.88952 16.9932 9.1901 16.9932 8.7587 16.5558C8.32731 16.1184 8.32731 15.4092 8.7587 14.9718L13.9029 9.75582H1.10465C0.494569 9.75582 0 9.25435 0 8.63576C0 8.01717 0.494569 7.5157 1.10465 7.5157H13.9029L8.7587 2.29975C8.32731 1.86234 8.32731 1.15316 8.7587 0.715753C9.1901 0.278343 9.88952 0.278343 10.3209 0.715753Z"
+              class="fill-lightmode-light dark:fill-light"
+            />
+          </svg>
+        </div>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  @layer starlight.components {
+    .card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      border-radius: 1rem;
+      position: relative;
+      border: 1px solid var(--sl-color-gray-6);
+      transition: border-color 0.3s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      background: var(--color-primary-gradient);
+      border-radius: inherit;
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 0.4;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .card-title-row .title {
+      font-size: var(--sl-text-h5);
+      color: var(--sl-color-white);
+      line-height: var(--sl-line-height-headings);
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .card .body {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .card .body :first-child {
+      margin-top: 0;
+    }
+
+    .module-poem {
+      font-size: var(--sl-text-sm);
+      line-height: 1.5;
+      margin: 0 0 0.625rem 0;
+      color: var(--sl-color-gray-3);
+    }
+
+    .sub-list {
+      font-size: var(--sl-text-xs);
+      line-height: 2;
+      margin: 0;
+      color: var(--sl-color-gray-2);
+      word-break: keep-all;
+    }
+
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      min-height: 1.75rem;
+    }
+
+    .module-footer {
+      font-size: var(--sl-text-xs);
+      color: var(--sl-color-gray-3);
+      margin: 0;
+      font-style: italic;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .module-footer em {
+      font-style: italic;
+    }
+
+    .arrow-btn {
+      width: 1.75rem;
+      height: 1.75rem;
+      min-width: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sl-color-gray-6);
+      transition: background 0.2s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+    }
+
+    .card:hover .arrow-btn {
+      background: color-mix(in oklab, var(--sl-color-accent) 60%, transparent);
+    }
+  }
+</style>

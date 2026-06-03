@@ -1,0 +1,86 @@
+---
+import Search from "./Search.astro";
+
+import config from "@/config/config.json" assert { type: "json" };
+const { data } = Astro.locals.starlightRoute.entry;
+const { title = data.title, tagline, actions } = data.hero || {};
+const heroIconLight = config.site.logo || "";
+const heroIconDark = config.site.logo_darkmode || "";
+
+// check if 404 page
+const is404 = Astro.locals.starlightRoute?.id === "404";
+---
+
+<div
+  class="hero flex flex-col items-center justify-center mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-40 flex-grow"
+>
+  {heroIconLight && <div data-icon-path={heroIconLight} data-icon-mode="light" class="hidden" />}
+  {heroIconDark && <div data-icon-path={heroIconDark} data-icon-mode="dark" class="hidden" />}
+  {title && <h1 set:html={title} class="mb-8 text-center rounded-2xl" />}
+  {tagline && <p set:html={tagline} class="text-xl text-center" />}
+
+  {
+    !is404 && (
+      <div class="mt-12 max-w-4xl w-full">
+        <div class="search-container rounded-2xl p-2 mb-6">
+          <div class="search-bar">
+            <Search />
+          </div>
+        </div>
+
+
+      </div>
+    )
+  }
+</div>
+
+<style>
+  @layer starlight.core {
+    h1 {
+      font-size: 7rem !important;
+      line-height: 1.1 !important;
+      letter-spacing: -2px;
+      color: var(--sl-color-white);
+      margin-bottom: 2rem;
+    }
+    h1 :global(.light-text) {
+      letter-spacing: 0.08em;
+    }
+    .search-container {
+      width: 90%;
+      margin: auto;
+      border: 1px solid
+        color-mix(in srgb, var(--sl-color-white) 5%, transparent);
+    }
+
+    @media (max-width: 940px) {
+      h1 {
+        font-size: 3.5rem !important;
+        line-height: 1.15 !important;
+        letter-spacing: -1px;
+      }
+      h1 :global(.light-text) {
+        letter-spacing: 0.05em;
+      }
+      .search-container {
+        width: 100%;
+      }
+    }
+  }
+</style>
+<script>
+  // make image elements and add the path to src
+  document.querySelectorAll("[data-icon-path]").forEach((el) => {
+    const iconPath = el.getAttribute("data-icon-path");
+    const mode = el.getAttribute("data-icon-mode");
+
+    const img = document.createElement("img");
+    img.src = iconPath || "";
+    img.alt = "icon";
+    img.className =
+      mode === "light"
+        ? "hidden lg:inline-block dark:hidden size-30 -mb-2 rounded-2xl animate-[bounce_2s_ease-in-out_infinite]"
+        : "hidden lg:dark:inline-block size-30 -mb-2 rounded-2xl animate-[bounce_2s_ease-in-out_infinite]";
+    el.replaceWith(img);
+  });
+</script>

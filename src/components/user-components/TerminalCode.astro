@@ -1,0 +1,99 @@
+---
+const { command } = Astro.props;
+const locale = (Astro.currentLocale || "en").toLowerCase();
+const copyHint = locale === "zh-cn" ? "复制链接" : "Copy link";
+const copiedText = locale === "zh-cn" ? "已复制!" : "Copied!";
+
+// Extract URL from command for clipboard
+const urlMatch = command.match(/https?:\/\/[^\s)]+/);
+const copyUrl = urlMatch ? urlMatch[0] : command;
+
+// Simple bash tokenizer
+function highlight(cmd: string): string {
+  const tokens: { text: string; cls: string }[] = [];
+  const re = /(\|\||&&|;|<<|>>|<\(|\)|\||>)|(https?:\/\/[^\s)]+)|(--?[\w.-]+(?:\s*=\s*\S+)?)|(\b\w+\b)|(\s+)|([(){}[\]])/g;
+  let last = 0;
+
+  for (const m of cmd.matchAll(re)) {
+    if (m.index! > last) {
+      tokens.push({ text: cmd.slice(last, m.index!), cls: "" });
+    }
+    if (m[1]) tokens.push({ text: m[1], cls: "op" });
+    else if (m[2]) tokens.push({ text: m[2], cls: "url" });
+    else if (m[3]) tokens.push({ text: m[3], cls: "flag" });
+    else if (m[4]) tokens.push({ text: m[4], cls: "word" });
+    else if (m[5]) tokens.push({ text: m[5], cls: "" });
+    else if (m[6]) tokens.push({ text: m[6], cls: "op" });
+    last = m.index! + m[0].length;
+  }
+  if (last < cmd.length) {
+    tokens.push({ text: cmd.slice(last), cls: "" });
+  }
+
+  return tokens.map(t => t.cls ? `<span class="${t.cls}">${escapeHtml(t.text)}</span>` : escapeHtml(t.text)).join("");
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+---
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.2.8/index.min.css" />
+
+<div class="not-content">
+  <div
+    class="terminal-code group relative w-full max-w-2xl mx-auto rounded-xl overflow-hidden my-12 cursor-pointer shadow-2xl"
+    data-copy={copyUrl}
+  >
+    <div class="flex items-center gap-2.5 px-5 py-3.5 bg-[#1e293b]">
+      <span class="size-3 rounded-full bg-[#ef4444]" />
+      <span class="size-3 rounded-full bg-[#eab308]" />
+      <span class="size-3 rounded-full bg-[#22c55e]" />
+      <span class="ml-4 text-xs text-[#64748b] font-mono select-none">bash</span>
+    </div>
+    <pre class="!mt-0 p-6 overflow-x-auto bg-[#0f172a]"><code class="font-mono"><span class="prompt">$</span> <span set:html={highlight(command)} /></code></pre>
+    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 rounded-xl">
+      <span class="copy-hint text-white text-base font-medium px-6 py-3 rounded-md bg-black/80 border border-white/20 pointer-events-none" data-copied={copiedText}>{copyHint}</span>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .terminal-code .prompt {
+    color: #64748b;
+    user-select: none;
+  }
+  .terminal-code .op { color: #f59e0b; }
+  .terminal-code .url { color: #38bdf8; }
+  .terminal-code .flag { color: #4ade80; }
+  .terminal-code .word { color: #e2e8f0; }
+
+  .terminal-code code,
+  .terminal-code .font-mono {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', 'Droid Sans Mono', 'Courier New', monospace !important;
+  }
+</style>
+
+<script>
+  document.querySelectorAll("[data-copy]").forEach((el) => {
+    el.addEventListener("click", async () => {
+      const url = el.getAttribute("data-copy") || "";
+      try {
+        await navigator.clipboard.writeText(url);
+        const hint = el.querySelector(".copy-hint");
+        if (hint) {
+          const orig = hint.textContent;
+          hint.textContent = hint.getAttribute("data-copied") || "Copied!";
+          setTimeout(() => { hint.textContent = orig; }, 1500);
+        }
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+    });
+  });
+</script>

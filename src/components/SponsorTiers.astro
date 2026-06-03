@@ -1,0 +1,209 @@
+---
+interface Tier {
+  name: string;
+  amount: string;
+  benefits: string;
+  audience: string;
+}
+
+const locale = (Astro.currentLocale || "en").toLowerCase();
+const isZh = locale === "zh-cn";
+
+const headers = isZh
+  ? { tier: "档位", amount: "金额", benefits: "权益说明", audience: "适合人群" }
+  : { tier: "Tier", amount: "Amount", benefits: "Benefits", audience: "For" };
+
+const tiers: Tier[] = isZh
+  ? [
+      {
+        name: "基础支持",
+        amount: "¥5 / 月",
+        benefits: "纯粹的精神支持，助力项目持续更新。",
+        audience: "使用过脚本并希望表示鼓励的用户。",
+      },
+      {
+        name: "进阶支持",
+        amount: "¥28.88 / 月",
+        benefits: '群内专属头衔，新功能 <strong>优先内测推送权</strong>。',
+        audience: "重度使用者，希望第一时间体验新特性。",
+      },
+      {
+        name: "核心支持者",
+        amount: "¥50 / 月",
+        benefits: 'ID <strong>永久刻入</strong> GitHub README 赞助者名单。',
+        audience: "希望在开源项目中留下印记的支持者。",
+      },
+      {
+        name: "自定义赞助",
+        amount: "自选金额（建议 ¥10 - ¥200）",
+        benefits: "金额自由，全部用于服务器与运维开销。",
+        audience: "希望灵活表达支持的用户。",
+      },
+    ]
+  : [
+      {
+        name: "Basic",
+        amount: "¥5 / mo",
+        benefits: "Pure encouragement to keep the project going.",
+        audience: "Users who want to show appreciation.",
+      },
+      {
+        name: "Plus",
+        amount: "¥28.88 / mo",
+        benefits: 'Exclusive group title, <strong>early access</strong> to new features.',
+        audience: "Power users who want to try new features first.",
+      },
+      {
+        name: "Core",
+        amount: "¥50 / mo",
+        benefits: 'Name <strong>permanently listed</strong> in GitHub README.',
+        audience: "Supporters who want to leave a mark in open source.",
+      },
+      {
+        name: "Custom",
+        amount: "Any amount (suggested ¥10 - ¥200)",
+        benefits: "Flexible amount, used for server and maintenance costs.",
+        audience: "Users who prefer flexible support.",
+      },
+    ];
+---
+
+<div class="st-wrap">
+  <table class="st-table">
+    <thead>
+      <tr>
+        <th class="col-tier">{headers.tier}</th>
+        <th class="col-amount">{headers.amount}</th>
+        <th class="col-benefits">{headers.benefits}</th>
+        <th class="col-audience">{headers.audience}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        tiers.map((tier) => (
+          <tr>
+            <td class="col-tier">
+              <span class="tier-name">{tier.name}</span>
+            </td>
+            <td class="col-amount">{tier.amount}</td>
+            <td class="col-benefits" set:html={tier.benefits} />
+            <td class="col-audience">{tier.audience}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  @layer starlight.components {
+    .st-wrap {
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .st-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--sl-color-gray-6) 30%, transparent);
+    }
+
+    /* 覆盖 Starlight 对 markdown 内表格的默认样式 */
+    :global(.sl-markdown-content) .st-table {
+      border-radius: 0.75rem !important;
+      overflow: hidden !important;
+    }
+
+    .st-table thead tr {
+      background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    }
+
+    .st-table th {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      text-align: left;
+      color: var(--sl-color-white);
+      white-space: nowrap;
+    }
+
+    .st-table td {
+      padding: 0.75rem 1rem;
+      color: var(--sl-color-gray-2);
+      vertical-align: top;
+    }
+
+    /* Column widths */
+    .col-tier {
+      width: 18%;
+      white-space: nowrap;
+    }
+    .col-amount {
+      width: 15%;
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .col-benefits {
+      width: 42%;
+    }
+    .col-audience {
+      width: 25%;
+    }
+
+    /* Zebra striping */
+    .st-table tbody tr:nth-child(even) {
+      background: color-mix(in srgb, var(--sl-color-gray-6) 8%, transparent);
+    }
+
+    /* Hover */
+    .st-table tbody tr {
+      transition: background 0.15s ease;
+    }
+    .st-table tbody tr:hover {
+      background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+    }
+
+    .tier-name {
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+
+    /* Light mode overrides */
+    :global([data-theme="light"]) .st-table {
+      border-color: #e2e8f0;
+    }
+    :global([data-theme="light"]) .st-table thead tr {
+      background: #eef2ff;
+    }
+    :global([data-theme="light"]) .st-table th {
+      color: #1e293b;
+    }
+    :global([data-theme="light"]) .st-table td {
+      color: #334155;
+    }
+    :global([data-theme="light"]) .st-table tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    :global([data-theme="light"]) .st-table tbody tr:hover {
+      background: #eef2ff;
+    }
+    :global([data-theme="light"]) .tier-name {
+      color: #0f172a;
+    }
+
+    @media (max-width: 768px) {
+      .st-table {
+        font-size: 0.8125rem;
+      }
+      .st-table th,
+      .st-table td {
+        padding: 0.5rem 0.625rem;
+      }
+    }
+  }
+</style>

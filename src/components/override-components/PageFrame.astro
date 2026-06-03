@@ -1,0 +1,221 @@
+---
+import MobileMenuToggle from "./MobileMenuToggle.astro";
+import Footer from "./Footer.astro";
+import CTA from "../CTA.astro";
+import CursorRipple from "../CursorRipple.astro";
+import SidebarNav from "../SidebarNav.astro";
+import ImageMod from "../ImageMod.astro";
+
+const { hasSidebar } = Astro.locals.starlightRoute;
+---
+
+<div class="page sl-flex">
+  <div class="global-grid-bg" aria-hidden="true" />
+  <CursorRipple />
+  {hasSidebar && (
+      <div class="doc-bg">
+        <ImageMod
+          src="/src/assets/doc-bg.png"
+          alt="Documentation Background"
+          class="hidden dark:block w-full h-full fixed top-0 left-0"
+          width={2000}
+          height={1000}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    )
+  }
+  <header class={"header" + (hasSidebar ? " has-sidebar" : " no-sidebar")}>
+    <slot name="header" />
+  </header>
+  {hasSidebar && <SidebarNav />}
+  <div class={`main-frame${!hasSidebar ? " hero-section snap-section" : ""}`}>
+    <div class="container flex relative">
+      {
+        hasSidebar && (
+          <nav
+            class="sidebar print:hidden"
+            aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}
+          >
+            <MobileMenuToggle />
+
+            <div id="starlight__sidebar" class="sidebar-pane">
+              <div class="sidebar-content sl-flex">
+                <slot name="sidebar" />
+              </div>
+            </div>
+          </nav>
+        )
+      }
+      <slot />
+    </div>
+  </div>
+  {!hasSidebar && <div class="snap-section"><CTA /></div>}
+  {!hasSidebar && <div class="snap-section footer-section"><Footer /></div>}
+</div>
+
+<style>
+  @layer starlight.core {
+    .page {
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Global animated grid background */
+    .global-grid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -20;
+      background-size: 60px 60px;
+      animation: grid-flow 20s linear infinite;
+    }
+
+    :global([data-theme="light"]) .global-grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(79, 70, 229, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(79, 70, 229, 0.06) 1px, transparent 1px);
+    }
+
+    :global([data-theme="dark"]) .global-grid-bg {
+      background-image:
+        linear-gradient(to right, rgba(129, 140, 248, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(129, 140, 248, 0.08) 1px, transparent 1px);
+    }
+
+    @keyframes grid-flow {
+      0% { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    .header {
+      z-index: var(--sl-z-index-navbar);
+      /* position: fixed; */
+      position: sticky;
+      inset-inline-start: 0;
+      inset-block-start: 0;
+      width: 100%;
+      /* height: 4.5rem; */
+      border-bottom: 1px solid
+        color-mix(in srgb, var(--sl-color-white) 10%, transparent);
+      padding: var(--sl-nav-pad-y) 0px;
+      /* padding-inline-end: var(--sl-nav-pad-x); */
+    }
+    .sidebar {
+      opacity: 0;
+      transition: all 0.3s ease-in-out;
+    }
+    .sidebar button:where(.astro-jif73yzw) {
+      top: 14px !important;
+    }
+    footer {
+      display: none;
+    }
+
+    /* Footer dark background for splash pages */
+    .footer-section {
+      background-color: #0a0a0f;
+    }
+    @media (max-width: 800px) {
+      .header {
+        background-color: var(--sl-color-black);
+        padding: 6px var(--sl-nav-pad-x);
+      }
+    }
+
+    :global([data-has-sidebar]) .main-frame {
+      padding-top: 2rem;
+    }
+    @media (max-width: 1156px) {
+      :global([data-has-sidebar]) .main-frame {
+        padding-top: 4rem;
+      }
+    }
+
+    .sidebar-pane {
+      visibility: var(--sl-sidebar-visibility, hidden);
+      position: sticky;
+      height: 80vh;
+      z-index: var(--sl-z-index-menu);
+      scrollbar-width: none;
+      background-color: var(--sl-color-black);
+      overflow-y: scroll;
+      inset-inline-start: 0;
+      width: 100%;
+      padding-bottom: 2rem;
+    }
+    @media (max-width: 1024px) {
+      .sidebar-pane {
+        inset-block: var(--sl-nav-height);
+      }
+    }
+    @media (max-width: 799px) {
+      .sidebar-pane {
+        position: fixed;
+        padding: 0 2rem;
+        height: 100vh;
+      }
+    }
+
+    :global([aria-expanded="true"]) ~ .sidebar-pane {
+      --sl-sidebar-visibility: visible;
+    }
+    .sidebar-content {
+      height: 100%;
+      min-height: max-content;
+      padding: 1rem var(--sl-sidebar-pad-x) 0;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 0px;
+      padding-left: 0px;
+      content: "";
+      padding-bottom: 1px;
+    }
+
+    @media (min-width: 50rem) {
+      .sidebar-pane {
+        --sl-sidebar-visibility: visible;
+        width: var(--sl-sidebar-width);
+        background-color: transparent;
+        inset-block: calc(var(--sl-nav-height) + 110px) 0;
+       
+      }
+    }
+  }
+</style>
+
+<script>
+  const sidebar = document.querySelector(".sidebar") as HTMLElement;
+
+  // Initialize sidebar functionality
+  function initializeSidebar(): void {
+    if (sidebar) {
+      sidebar.style.opacity = "1";
+    }
+  }
+
+  // Initialize sidebar when DOM is ready (only once)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeSidebar);
+  } else {
+    initializeSidebar();
+  }
+
+  // accordion
+  const accordions = document.querySelectorAll(
+    ".accordion"
+  ) as NodeListOf<HTMLElement>;
+
+  accordions.forEach((accordion) => {
+    // close other accordions when one is opened
+    accordion.addEventListener("click", () => {
+      accordions.forEach((otherAccordion) => {
+        if (otherAccordion !== accordion) {
+          otherAccordion.classList.remove("active");
+        }
+      });
+      accordion.classList.toggle("active");
+    });
+  });
+</script>

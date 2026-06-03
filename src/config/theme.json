@@ -1,0 +1,36 @@
+{
+  "colors": {
+    "default": {
+      "theme_color": {
+        "primary": "#4F46E5",
+        "body": "#0a0a0f",
+        "light": "#e2e8f0",
+        "dark": "#0f172a"
+      },
+      "text_color": {
+        "text": "#94a3b8"
+      }
+    },
+    "lightmode": {
+      "theme_color": {
+        "primary": "#4F46E5",
+        "body": "#ffffff",
+        "light": "#334155",
+        "dark": "#f1f5f9"
+      },
+      "text_color": {
+        "text": "#1e293b"
+      }
+    }
+  },
+  "fonts": {
+    "font_family": {
+      "primary": "MiSans Latin",
+      "primary_type": "sans-serif"
+    },
+    "font_size": {
+      "base": "16",
+      "scale": "1.15"
+    }
+  }
+}

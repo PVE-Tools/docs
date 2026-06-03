@@ -1,0 +1,311 @@
+---
+import config from "@/config/config.json";
+import social from "@/config/social.json";
+import { Icon } from "@astrojs/starlight/components";
+import { markdownify } from "@/lib/utils/textConverter";
+import { getTranslations } from "@/lib/utils/languagePerser";
+
+const locale = (Astro.currentLocale || "en").toLowerCase();
+
+const menu = await getTranslations(locale || "en");
+
+const footer = menu.footer;
+const currentLocal = Astro.currentLocale || "en";
+---
+
+<footer>
+  <div class="container">
+    <div class="top-footer">
+      {
+        footer.about && (
+          <div>
+            <h4>{footer.about.title}</h4>
+            <ul>
+              {footer.about?.links.map((link: any) => (
+                <li>
+                  <a href={link.url}>{link.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        footer.community && (
+          <div>
+            <h4>{footer.community.title}</h4>
+            <ul>
+              {footer.community?.links.map((link: any) => (
+                <li>
+                  <a href={link.url}>{link.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        footer.help_links && (
+          <div>
+            <h4>{footer.help_links.title}</h4>
+            <ul>
+              {footer.help_links?.links.map((link: any) => (
+                <li>
+                  <a href={link.url}>{link.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      {
+        footer.company && (
+          <div>
+            <h4>{footer.company.title}</h4>
+            <ul>
+              {footer.company?.links.map((link: any) => (
+                <li>
+                  <a href={link.url}>{link.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      {
+        config?.params?.footer_contact?.enable && (
+          <div>
+            <h4>Connect With Us</h4>
+            <form
+              action={config?.params?.footer_contact?.action}
+              class="mail-form"
+            >
+              <input type="email" placeholder="Enter your email" required />
+              <button type="submit" aria-label="Submit email">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.0477 3.05293C18.8697 0.707361 2.48648 6.4532 2.50001 8.551C2.51535 10.9299 8.89809 11.6617 10.6672 12.1581C11.7311 12.4565 12.016 12.7625 12.2613 13.8781C13.3723 18.9305 13.9301 21.4435 15.2014 21.4996C17.2278 21.5892 23.1733 5.342 21.0477 3.05293Z"
+                    class="stroke-black dark:stroke-white"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M11.5 12.5L15 9"
+                    class="stroke-black dark:stroke-white"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </form>
+
+            <ul class="social-icons">
+              {social.main.map((item) => (
+                <li>
+                  <a href={item.href} aria-label={item.label}>
+                    <Icon
+                      name={item?.icon as any}
+                      color="var(--sl-color-white)"
+                      size="20px"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+    <div class="bottom-footer">
+      <p set:html={markdownify(config?.params?.copyright)} />
+      <a
+        href="https://pages.cloudflare.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="cf-badge"
+        aria-label="Powered by Cloudflare Pages"
+      >
+        Powered by Cloudflare
+        <svg class="cf-pages-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path fill="currentColor" d="M10.715 14.32H5.442l-.64-1.203L13.673 0l1.397.579-1.752 9.112h5.24l.648 1.192L10.719 24l-1.412-.54ZM4.091 5.448a.5787.5787 0 1 1 0-1.1574.5787.5787 0 0 1 0 1.1574zm1.543 0a.5787.5787 0 1 1 0-1.1574.5787.5787 0 0 1 0 1.1574zm1.544 0a.5787.5787 0 1 1 0-1.1574.5787.5787 0 0 1 0 1.1574zm8.657-2.7h5.424l.772.771v16.975l-.772.772h-7.392l.374-.579h6.779l.432-.432V3.758l-.432-.432h-4.676l-.552 2.85h-.59l.529-2.877.108-.552ZM2.74 21.265l-.772-.772V3.518l.772-.771h7.677l-.386.579H2.98l-.432.432v16.496l.432.432h5.586l-.092.579zm1.157-1.93h3.28l-.116.58h-3.55l-.192-.193v-3.473l.578 1.158zm13.117 0 .579.58H14.7l.385-.58z"/>
+        </svg>
+        Pages
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  @layer starlight.core {
+    footer {
+      background-color: #0f172a;
+      margin-top: auto;
+    }
+
+    :global([data-theme="light"]) footer {
+      background-color: #f8fafc;
+    }
+
+    .top-footer {
+      border-bottom: 1px solid var(--sl-color-gray-6);
+      padding: 60px 0;
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    :global([data-theme="light"]) .top-footer {
+      border-bottom-color: #e2e8f0;
+    }
+
+    .top-footer h4 {
+      font-size: 1rem !important;
+      margin-bottom: 4rem;
+      color: var(--sl-color-white);
+    }
+
+    .top-footer ul {
+      list-style: none;
+      padding: 0;
+    }
+    .top-footer ul li {
+      margin-bottom: 1.2rem;
+    }
+    .top-footer ul li a {
+      color: var(--sl-color-gray-3);
+      text-decoration: none;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+    .top-footer ul li a:hover {
+      color: var(--color-primary);
+    }
+
+    :global([data-theme="light"]) .top-footer ul li a {
+      color: #475569;
+    }
+    :global([data-theme="light"]) .top-footer ul li a:hover {
+      color: var(--color-primary);
+    }
+
+    .mail-form {
+      border: 1px solid var(--sl-color-gray-6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 12px;
+      padding: 0.5rem 0.8rem;
+      background-color: var(--sl-color-black);
+    }
+
+    :global([data-theme="light"]) .mail-form {
+      border-color: #e2e8f0;
+      background-color: #ffffff;
+    }
+
+    .mail-form input {
+      background-color: transparent;
+      width: 90%;
+      color: inherit;
+    }
+    .mail-form input:focus {
+      outline: none;
+    }
+    .mail-form button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      cursor: pointer;
+    }
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .social-icons li a {
+      background: color-mix(in srgb, var(--sl-color-gray-4) 20%, transparent);
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.6s ease;
+    }
+    .social-icons li a:hover {
+      background: var(--color-primary-gradient);
+      color: white !important;
+    }
+
+    :global([data-theme="light"]) .social-icons li a {
+      background: #e2e8f0;
+    }
+    :global([data-theme="light"]) .social-icons li a:hover {
+      background: var(--color-primary-gradient);
+    }
+
+    .bottom-footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--sl-color-hairline);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    :global([data-theme="light"]) .bottom-footer {
+      border-top-color: #e2e8f0;
+    }
+
+    .bottom-footer a {
+      color: var(--sl-color-gray-3);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .bottom-footer a:hover {
+      color: var(--color-primary);
+    }
+
+    :global([data-theme="light"]) .bottom-footer a {
+      color: #475569;
+    }
+    :global([data-theme="light"]) .bottom-footer a:hover {
+      color: var(--color-primary);
+    }
+
+    .cf-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8125rem;
+      color: var(--sl-color-gray-4);
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .cf-badge:hover {
+      opacity: 1;
+    }
+
+    .cf-pages-icon {
+      width: 1em;
+      height: 1em;
+      flex-shrink: 0;
+    }
+
+    :global([data-theme="light"]) .cf-badge {
+      color: #64748b;
+    }
+  }
+</style>

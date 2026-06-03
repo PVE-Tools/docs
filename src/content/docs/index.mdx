@@ -1,0 +1,111 @@
+---
+title: PVE Tools Pro
+description: PVE Tools Pro — 面向 Proxmox VE 9.x 的一键运维脚本，覆盖换源、系统维护、VM 生命周期、宿主机网络、防火墙、IPv6、GPU 与 PCI 直通。
+template: splash
+hero:
+  title: |
+    PVE Tools Pro <span class="light-text">一站式运维解决方案</span>
+  tagline: 一行命令，全部就绪。坐和放宽，很快就好。
+  actions:
+    - text: 快速开始
+      link: /guide/
+      variant: primary
+    - text: 查看 GitHub
+      link: https://github.com/PVE-Tools/PVE-Tools-9
+      variant: secondary
+---
+
+import Section from "~/components/Section.astro";
+import Card from "~/components/user-components/NewCard.astro";
+import Grid from "~/components/user-components/Grid.astro";
+import ListCard from "~/components/user-components/ListCard.astro";
+import LinkButton from "~/components/LinkButton.astro";
+import TerminalCode from "~/components/user-components/TerminalCode.astro";
+
+<Section
+  title="核心功能 <span class='light-text'>六大模块</span>"
+  description="PVE Tools Pro 围绕 Proxmox VE 9.x 的高频运维场景做了集中封装。"
+>
+
+<Grid columns={3}>
+  <Card title="系统维护" icon="lucide:settings" iconColor="#979BFF">
+    <p class="module-poem">PVE 宿主机的运维管家。</p>
+    <p class="sub-list">源管理 · 内核管理 · 订阅管理 · 电源管理 · 温度监控 · 漏洞修复 · Grub 维护 · Ceph 维护 · 一键初始化装机 · 一键自动升级</p>
+    <span slot="footer">从软件源到内核，全栈管理。</span>
+  </Card>
+
+  <Card title="网络配置" icon="lucide:network" iconColor="#FFD97B">
+    <p class="module-poem">PVE 宿主机的网络总闸。</p>
+    <p class="sub-list">Bridge 管理 · Bond 管理 · VLAN 管理 · 防火墙 · 网络诊断</p>
+    <span slot="footer">从网桥到防火墙，一站式配置。</span>
+  </Card>
+
+  <Card title="GPU 直通" icon="lucide:monitor" iconColor="#FF8585">
+    <p class="module-poem">GPU 与硬件加速终极方案。</p>
+    <p class="sub-list">IOMMU 管理 · Intel GPU · NVIDIA GPU · AMD GPU · 磁盘直通 · GPU 列表</p>
+    <span slot="footer">Intel / NVIDIA / AMD，全家桶支持。</span>
+  </Card>
+
+  <Card title="虚拟机运维" icon="lucide:server" iconColor="#7BE1A4">
+    <p class="module-poem">VM 的全生命周期管家。</p>
+    <p class="sub-list">VM 列表 · 电源管理 · 备份管理 · 克隆管理 · 迁移管理 · 快照管理 · 定时任务 · Cloud-Init · 磁盘管理 · FastPVE · 镜像导入</p>
+    <span slot="footer">从创建到销毁，完整运维链路。</span>
+  </Card>
+
+  <Card title="存储管理" icon="lucide:hard-drive" iconColor="#60A5FA">
+    <p class="module-poem">PVE 的存储精细化管家。</p>
+    <p class="sub-list">存储列表 · 存储合并 · Ceph 管理 · Swap 管理 · 硬盘休眠</p>
+    <span slot="footer">从本地磁盘到分布式存储，全覆盖。</span>
+  </Card>
+
+  <Card title="系统诊断" icon="lucide:activity" iconColor="#F472B6">
+    <p class="module-poem">PVE 的体检中心。</p>
+    <p class="sub-list">系统采集 · 健康检查 · 救砖工具</p>
+    <span slot="footer">从健康检查到紧急救砖，全方位诊断。</span>
+  </Card>
+</Grid>
+
+</Section>
+
+<Section
+  title="快速开始 <span class='light-text'>一键部署</span>"
+  description="在 PVE 终端中粘贴执行以下命令，启动器会按地区自动选择 GitHub 下载策略，并让你选择 Go 版本或 Shell 版本。"
+>
+
+<TerminalCode command="bash <(curl -sSL https://pve.oowo.cc/PVE-Tools.sh)" />
+
+<div class="flex flex-wrap justify-center gap-4 mt-8">
+  <LinkButton href="/guide/" variant="outline">📄 使用指南</LinkButton>
+  <LinkButton href="/features/" variant="outline">⚡ 功能特性</LinkButton>
+  <LinkButton href="/faq/" variant="outline">❓ 常见问题</LinkButton>
+</div>
+
+</Section>
+
+<Section
+  title="深入学习 <span class='light-text'>高级教程</span>"
+  description="深入 GPU 直通、SR-IOV、CPU 调优、PVE 升级等专题。"
+>
+
+<Grid columns={3}>
+<ListCard title="GPU 与虚拟化" icon="lucide:monitor" number="3">
+- [核显直通教程](/advanced/gpu-passthrough/)
+- [核显虚拟化 SR-IOV](/advanced/gpu-virtualization/)
+- [NVIDIA vGPU 驱动说明](/advanced/nvidia-vgpu-driver-notes/)
+</ListCard>
+
+<ListCard title="系统与存储" icon="lucide:hard-drive" number="3">
+- [PVE 8 升级 PVE 9](/advanced/pve-upgrade/)
+- [存储管理深度解析](/advanced/storage-management/)
+- [CPU 性能调优](/advanced/cpu-optimization/)
+</ListCard>
+
+<ListCard title="网络与运维" icon="lucide:network" number="4">
+- [宿主机网络/防火墙/IPv6](/advanced/host-network-firewall-ipv6/)
+- [VM 备份/迁移/Cloud-Init](/advanced/vm-backup-migration-cloudinit/)
+- [误操作后的数据恢复](/advanced/data-recovery-after-mistake/)
+- [如何连接 PVE SSH](/advanced/how-to-connect-ssh/)
+</ListCard>
+</Grid>
+
+</Section>

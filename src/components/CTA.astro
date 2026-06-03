@@ -1,0 +1,171 @@
+---
+import { getEntry } from "astro:content";
+
+const locale = (Astro.currentLocale || "en").toLowerCase();
+
+const cta = await getEntry(
+  "ctaSection",
+  `${locale === "en" ? "" : `${locale}/`}call-to-action`
+);
+const { title, description, enable, fill_button, outline_button } =
+  cta?.data ?? {};
+
+const isExternalLink = (link?: string) => !!link && link.startsWith("http");
+---
+
+{
+  enable && (
+    <div class="cta-container">
+      <div class="cta-content">
+        {title && <h2 class="cta-title" set:html={title} />}
+        {description && <p class="cta-description" set:html={description} />}
+        <div class="cta-buttons">
+          {fill_button?.enable && (
+            <a
+              href={fill_button.link || "/guide/"}
+              class="cta-btn cta-btn-primary"
+              {...(isExternalLink(fill_button.link) ? { target: "_blank", rel: "noopener" } : {})}
+            >
+              {fill_button.label || "Get Started"}
+            </a>
+          )}
+          {outline_button?.enable && (
+            <a
+              href={outline_button.link || "/guide/"}
+              class="cta-btn cta-btn-outline"
+              {...(isExternalLink(outline_button.link) ? { target: "_blank", rel: "noopener" } : {})}
+            >
+              {outline_button.label || "View Repository"}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .cta-container {
+    position: relative;
+    overflow: hidden;
+    padding: 5rem 1.5rem;
+    text-align: center;
+  }
+
+  /* Content */
+  .cta-content {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .cta-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.5rem;
+  }
+
+  :global([data-theme="light"]) .cta-title {
+    color: #0f172a;
+  }
+
+  :global([data-theme="dark"]) .cta-title {
+    color: #f1f5f9;
+  }
+
+
+  .cta-description {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin: 0 0 2rem;
+    opacity: 0.8;
+  }
+
+  :global([data-theme="light"]) .cta-description {
+    color: #475569;
+  }
+
+  :global([data-theme="dark"]) .cta-description {
+    color: #94a3b8;
+  }
+
+  /* Buttons */
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    padding: 0 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border-radius: 0.625rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .cta-btn-primary {
+    background: #4F46E5;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3);
+  }
+
+  .cta-btn-primary:hover {
+    background: #4338CA;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .cta-btn-outline {
+    background: transparent;
+    border: 1.5px solid #4F46E5;
+    color: #4F46E5;
+  }
+
+  .cta-btn-outline:hover {
+    background: #4F46E5;
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  :global([data-theme="dark"]) .cta-btn-outline {
+    border-color: #818CF8;
+    color: #818CF8;
+  }
+
+  :global([data-theme="dark"]) .cta-btn-outline:hover {
+    background: #818CF8;
+    color: #0f172a;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .cta-container {
+      padding: 3.5rem 1rem;
+    }
+
+    .cta-title {
+      font-size: 1.875rem;
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cta-btn {
+      width: 100%;
+      max-width: 280px;
+    }
+  }
+</style>

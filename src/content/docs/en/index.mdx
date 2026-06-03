@@ -1,0 +1,111 @@
+---
+title: Proxmox VE 9 Toolkit
+description: PVE Tools Pro — One-click ops scripts for Proxmox VE 9.x, covering repo management, system maintenance, VM lifecycle, host networking, firewall, IPv6, GPU & PCI passthrough.
+template: splash
+hero:
+  title: |
+    PVE Tools Pro <span class="light-text">All-in-One Ops Solution</span>
+  tagline: One command, all set. Sit back and relax.
+  actions:
+    - text: Get Started
+      link: /en/guide/
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/PVE-Tools/PVE-Tools-9
+      variant: secondary
+---
+
+import Section from "~/components/Section.astro";
+import Card from "~/components/user-components/NewCard.astro";
+import Grid from "~/components/user-components/Grid.astro";
+import ListCard from "~/components/user-components/ListCard.astro";
+import LinkButton from "~/components/LinkButton.astro";
+import TerminalCode from "~/components/user-components/TerminalCode.astro";
+
+<Section
+  title="Core Features <span class='light-text'>Six Modules</span>"
+  description="PVE Tools Pro encapsulates high-frequency ops scenarios for Proxmox VE 9.x."
+>
+
+<Grid columns={3}>
+  <Card title="System Maintenance" icon="lucide:settings" iconColor="#979BFF">
+    <p class="module-poem">Your PVE host ops butler.</p>
+    <p class="sub-list">Repo Management · Kernel Mgmt · Subscription · Power Mgmt · Temperature · Vulnerability Fix · Grub · Ceph · One-click Install · Auto Upgrade</p>
+    <span slot="footer">From repos to kernels, full-stack management.</span>
+  </Card>
+
+  <Card title="Networking" icon="lucide:network" iconColor="#FFD97B">
+    <p class="module-poem">Network control hub for PVE hosts.</p>
+    <p class="sub-list">Bridge · Bond · VLAN · Firewall · Network Diagnostics</p>
+    <span slot="footer">From bridges to firewalls, one-stop config.</span>
+  </Card>
+
+  <Card title="GPU Passthrough" icon="lucide:monitor" iconColor="#FF8585">
+    <p class="module-poem">Ultimate GPU & hardware acceleration.</p>
+    <p class="sub-list">IOMMU · Intel GPU · NVIDIA GPU · AMD GPU · Disk Passthrough · GPU List</p>
+    <span slot="footer">Intel / NVIDIA / AMD, full support.</span>
+  </Card>
+
+  <Card title="VM Operations" icon="lucide:server" iconColor="#7BE1A4">
+    <p class="module-poem">Full lifecycle VM management.</p>
+    <p class="sub-list">VM List · Power · Backup · Clone · Migration · Snapshot · Cron · Cloud-Init · Disk · FastPVE · Image Import</p>
+    <span slot="footer">From creation to destruction, complete ops chain.</span>
+  </Card>
+
+  <Card title="Storage Management" icon="lucide:hard-drive" iconColor="#60A5FA">
+    <p class="module-poem">Fine-grained PVE storage manager.</p>
+    <p class="sub-list">Storage List · Merge · Ceph · Swap · Disk Hibernation</p>
+    <span slot="footer">From local disks to distributed storage, full coverage.</span>
+  </Card>
+
+  <Card title="Diagnostics" icon="lucide:activity" iconColor="#F472B6">
+    <p class="module-poem">PVE health check center.</p>
+    <p class="sub-list">System Collection · Health Check · Recovery Tool</p>
+    <span slot="footer">From health checks to emergency recovery, full diagnostics.</span>
+  </Card>
+</Grid>
+
+</Section>
+
+<Section
+  title="Quick Start <span class='light-text'>One-Click Deploy</span>"
+  description="Paste and run the following command in your PVE terminal to launch the toolkit."
+>
+
+<TerminalCode command="bash <(curl -sSL https://pve.oowo.cc/PVE-Tools.sh)" />
+
+<div class="flex flex-wrap justify-center gap-4 mt-8">
+  <LinkButton href="/en/guide/" variant="outline">📄 Usage Guide</LinkButton>
+  <LinkButton href="/en/features/" variant="outline">⚡ Features</LinkButton>
+  <LinkButton href="/en/faq/" variant="outline">❓ FAQ</LinkButton>
+</div>
+
+</Section>
+
+<Section
+  title="Deep Dive <span class='light-text'>Advanced Tutorials</span>"
+  description="In-depth guides on GPU passthrough, SR-IOV, CPU tuning, PVE upgrades, and more."
+>
+
+<Grid columns={3}>
+<ListCard title="GPU & Virtualization" icon="lucide:monitor" number="3">
+- [iGPU Passthrough Guide](/advanced/gpu-passthrough/)
+- [iGPU Virtualization SR-IOV](/advanced/gpu-virtualization/)
+- [NVIDIA vGPU Driver Notes](/advanced/nvidia-vgpu-driver-notes/)
+</ListCard>
+
+<ListCard title="System & Storage" icon="lucide:hard-drive" number="3">
+- [Upgrade PVE 8 to PVE 9](/advanced/pve-upgrade/)
+- [Storage Management Deep Dive](/advanced/storage-management/)
+- [CPU Performance Tuning](/advanced/cpu-optimization/)
+</ListCard>
+
+<ListCard title="Network & Ops" icon="lucide:network" number="4">
+- [Host Network / Firewall / IPv6](/advanced/host-network-firewall-ipv6/)
+- [VM Backup / Migration / Cloud-Init](/advanced/vm-backup-migration-cloudinit/)
+- [Data Recovery After Mistakes](/advanced/data-recovery-after-mistake/)
+- [How to Connect PVE SSH](/advanced/how-to-connect-ssh/)
+</ListCard>
+</Grid>
+
+</Section>

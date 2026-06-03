@@ -1,0 +1,109 @@
+{
+  "main": [
+    {
+      "name": "Home",
+      "url": "/en/"
+    },
+    {
+      "name": "Guide",
+      "url": "/en/guide/"
+    },
+    {
+      "name": "Changelog",
+      "url": "/en/update/"
+    },
+    {
+      "name": "Legal",
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "User Agreement",
+          "url": "/en/ula/"
+        },
+        {
+          "name": "Privacy Policy",
+          "url": "/en/privacy-policy/"
+        }
+      ]
+    },
+    {
+      "name": "Sponsor",
+      "url": "/en/sponsor/"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/PVE-Tools/PVE-Tools-9"
+    }
+  ],
+  "footer": {
+    "community": {
+      "title": "Community",
+      "links": [
+        {
+          "name": "GitHub Issues",
+          "url": "https://github.com/PVE-Tools/PVE-Tools-9/issues"
+        },
+        {
+          "name": "GitHub Discussions",
+          "url": "https://github.com/PVE-Tools/PVE-Tools-9/discussions"
+        }
+      ]
+    },
+    "help_links": {
+      "title": "Quick Links",
+      "links": [
+        {
+          "name": "Usage Guide",
+          "url": "/en/guide/"
+        },
+        {
+          "name": "Features",
+          "url": "/en/features/"
+        },
+        {
+          "name": "FAQ",
+          "url": "/en/faq/"
+        },
+        {
+          "name": "Changelog",
+          "url": "/en/update/"
+        },
+        {
+          "name": "Sponsor",
+          "url": "/en/sponsor/"
+        },
+        {
+          "name": "Privacy Policy",
+          "url": "/en/privacy-policy/"
+        }
+      ]
+    },
+    "about": {
+      "title": "About",
+      "links": [
+        {
+          "name": "About Website",
+          "url": "/en/about/"
+        }
+      ]
+    },
+    "company": {
+      "title": "Legal",
+      "links": [
+        {
+          "name": "User Agreement (ULA/TOS)",
+          "url": "/en/ula/"
+        },
+        {
+          "name": "Archival Notice",
+          "url": "/en/eol/"
+        },
+        {
+          "name": "Roadmap",
+          "url": "/en/todo/"
+        }
+      ]
+    }
+  }
+}

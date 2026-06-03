@@ -1,0 +1,40 @@
+---
+const { href, variant = "primary", className } = Astro.props;
+
+const base = "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 no-underline cursor-pointer gap-2";
+
+const variants: Record<string, string> = {
+  primary: "bg-primary text-white hover:brightness-110 h-10 px-4 py-2",
+  text: "flex items-center gap-2 text-(--sl-color-gray-2) hover:text-(--sl-color-white) no-underline",
+  brand: "bg-primary text-white hover:brightness-110 h-10 px-4 py-2",
+  outline: "border border-(--sl-color-gray-5) text-(--sl-color-gray-2) hover:border-(--sl-color-gray-4) hover:text-(--sl-color-white) h-10 px-5 py-2",
+};
+
+const classes = `${base} ${variants[variant] || variants.primary} ${className || ""}`.trim();
+---
+
+<a href={href} class={classes}>
+  <slot />
+  <svg
+    width="9"
+    height="16"
+    viewBox="0 0 9 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="transition-transform duration-300 group-hover:translate-x-0.5"
+  >
+    <path
+      d="M1 15L8 8L1 1"
+      class="stroke-current"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+</a>
+
+<style>
+  a:hover svg {
+    transform: translateX(4px);
+  }
+</style>

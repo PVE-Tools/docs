@@ -1,0 +1,150 @@
+---
+import { Icon as LucideIcon } from "astro-icon/components";
+
+const { title, icon, iconColor, number } = Astro.props;
+const locale = Astro.currentLocale || "en";
+---
+
+<div class="list-card">
+  <div class="list-card-header">
+    <div class="header-left">
+      <div class="icon-wrap">
+        {icon && (
+          <LucideIcon name={icon} size="1.25rem" color={iconColor || "#818CF8"} />
+        )}
+      </div>
+      <h3>{title}</h3>
+    </div>
+    <span class="article-count">{number} {locale.toLowerCase() === "zh-cn" ? "篇文章" : "Articles"}</span>
+  </div>
+
+  <div class="list-body">
+    <slot />
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .list-card {
+      background: var(--sl-color-black);
+      border: 1px solid var(--sl-color-gray-6);
+      border-radius: 1rem;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .list-card:hover {
+      border-color: color-mix(in oklab, var(--sl-color-accent) 40%, transparent);
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.08);
+    }
+
+    .list-card-header {
+      background-color: color-mix(in oklab, var(--sl-color-gray-6) 30%, transparent);
+      display: flex;
+      border-radius: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .icon-wrap {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in oklab, var(--sl-color-accent) 12%, transparent);
+      flex-shrink: 0;
+      transition: background 0.3s ease;
+    }
+
+    .list-card:hover .icon-wrap {
+      background: color-mix(in oklab, var(--sl-color-accent) 25%, transparent);
+    }
+
+    .list-card-header h3 {
+      font-size: 1.1rem !important;
+      margin: 0 !important;
+      font-weight: 600 !important;
+      color: var(--sl-color-white);
+    }
+
+    .article-count {
+      font-size: 0.8rem;
+      color: var(--sl-color-gray-3);
+      background: color-mix(in oklab, var(--sl-color-gray-6) 50%, transparent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      white-space: nowrap;
+    }
+
+    .list-body {
+      padding: 0 0.75rem 0.5rem;
+    }
+
+    /* 覆盖全局 styles/components.css 中的 .list-body 样式 */
+    .list-body :global(ul) {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .list-body :global(li) {
+      display: flex;
+      align-items: center;
+      padding: 0.65rem 0.75rem !important;
+      border-radius: 0.5rem;
+      border-bottom: none !important;
+      transition: background 0.2s ease, transform 0.2s ease;
+      position: relative;
+      margin-top: 0 !important;
+    }
+
+    /* 清除全局的 DOC 图标 mask-image */
+    .list-body :global(li)::before {
+      content: "" !important;
+      width: 6px !important;
+      height: 6px !important;
+      border-radius: 50% !important;
+      background: var(--sl-color-gray-4) !important;
+      mask-image: none !important;
+      -webkit-mask-image: none !important;
+      flex-shrink: 0;
+      margin-right: 0.75rem !important;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .list-body :global(li a) {
+      text-decoration: none;
+      color: var(--sl-color-text);
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+      width: 100%;
+    }
+
+    .list-body :global(li):hover {
+      background: color-mix(in oklab, var(--sl-color-accent) 8%, transparent) !important;
+      transform: translateX(4px);
+    }
+
+    .list-body :global(li):hover::before {
+      background: var(--sl-color-accent) !important;
+      transform: scale(1.3);
+    }
+
+    .list-body :global(li):hover a {
+      color: var(--sl-color-white);
+    }
+  }
+</style>

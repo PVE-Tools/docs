@@ -1,0 +1,210 @@
+---
+interface Plan {
+  name: string;
+  price: string;
+  desc: string;
+}
+
+const locale = (Astro.currentLocale || "en").toLowerCase();
+const isZh = locale === "zh-cn";
+
+const headers = isZh
+  ? { type: "服务类型", price: "价格", desc: "说明" }
+  : { type: "Service", price: "Price", desc: "Description" };
+
+const plans: Plan[] = isZh
+  ? [
+      {
+        name: "按次咨询",
+        price: "¥9.9 / 次",
+        desc: "一次性解答一个具体问题（如某条命令怎么写、某个报错的含义）。不含远程操作。",
+      },
+      {
+        name: "按小时远程",
+        price: "¥99 / 30 分钟",
+        desc: "通过 ToDesk / AnyDesk / SSH 远程操作，按实际时长计费（不足 30 分钟按 30 分钟算）。",
+      },
+      {
+        name: "全流程代配",
+        price: "¥299 起",
+        desc: "从安装 PVE、换源、直通、创建虚拟机到网络配置，一条龙完成。具体报价根据硬件和需求协商。",
+      },
+      {
+        name: "紧急救砖",
+        price: "¥199 / 次",
+        desc: "系统无法启动、Web UI 打不开、内核 panic 等紧急情况，优先处理。",
+      },
+    ]
+  : [
+      {
+        name: "Per-question",
+        price: "¥9.9 / time",
+        desc: "One specific question answered (e.g. what an error means, how to write a command). No remote access.",
+      },
+      {
+        name: "Remote (hourly)",
+        price: "¥99 / 30 min",
+        desc: "Remote operation via ToDesk / AnyDesk / SSH, billed by actual time (minimum 30 min).",
+      },
+      {
+        name: "Full setup",
+        price: "¥299+",
+        desc: "End-to-end: install PVE, change sources, passthrough, create VMs, configure networking. Quote depends on hardware and requirements.",
+      },
+      {
+        name: "Emergency recovery",
+        price: "¥199 / time",
+        desc: "System won't boot, Web UI down, kernel panic, etc. Priority handling.",
+      },
+    ];
+
+const payMethods = isZh
+  ? "支持微信 / 支付宝 / 爱发电 / PayPal / Stripe"
+  : "Supports WeChat / Alipay / Afdian / PayPal / Stripe";
+---
+
+<div class="pt-wrap">
+  <table class="pt-table">
+    <thead>
+      <tr>
+        <th class="col-type">{headers.type}</th>
+        <th class="col-price">{headers.price}</th>
+        <th class="col-desc">{headers.desc}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        plans.map((plan) => (
+          <tr>
+            <td class="col-type">
+              <span class="plan-name">{plan.name}</span>
+            </td>
+            <td class="col-price">{plan.price}</td>
+            <td class="col-desc">{plan.desc}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="pt-note">{payMethods}</p>
+</div>
+
+<style>
+  @layer starlight.components {
+    .pt-wrap {
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .pt-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid color-mix(in srgb, var(--sl-color-gray-6) 30%, transparent);
+    }
+
+    /* 覆盖 Starlight 对 markdown 内表格的默认样式 */
+    :global(.sl-markdown-content) .pt-table {
+      border-radius: 0.75rem !important;
+      overflow: hidden !important;
+    }
+
+    .pt-table thead tr {
+      background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    }
+
+    .pt-table th {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      text-align: left;
+      color: var(--sl-color-white);
+      white-space: nowrap;
+    }
+
+    .pt-table td {
+      padding: 0.75rem 1rem;
+      color: var(--sl-color-gray-2);
+      vertical-align: top;
+    }
+
+    /* Column widths */
+    .col-type {
+      width: 16%;
+      white-space: nowrap;
+    }
+    .col-price {
+      width: 16%;
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .col-desc {
+      width: 68%;
+    }
+
+    /* Zebra striping */
+    .pt-table tbody tr:nth-child(even) {
+      background: color-mix(in srgb, var(--sl-color-gray-6) 8%, transparent);
+    }
+
+    /* Hover */
+    .pt-table tbody tr {
+      transition: background 0.15s ease;
+    }
+    .pt-table tbody tr:hover {
+      background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+    }
+
+    .plan-name {
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+
+    .pt-note {
+      margin-top: 0.5rem;
+      font-size: 0.8125rem;
+      color: var(--sl-color-gray-3);
+      text-align: right;
+    }
+
+    /* Light mode */
+    :global([data-theme="light"]) .pt-table {
+      border-color: #e2e8f0;
+    }
+    :global([data-theme="light"]) .pt-table thead tr {
+      background: #eef2ff;
+    }
+    :global([data-theme="light"]) .pt-table th {
+      color: #1e293b;
+    }
+    :global([data-theme="light"]) .pt-table td {
+      color: #334155;
+    }
+    :global([data-theme="light"]) .pt-table tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    :global([data-theme="light"]) .pt-table tbody tr:hover {
+      background: #eef2ff;
+    }
+    :global([data-theme="light"]) .plan-name {
+      color: #0f172a;
+    }
+    :global([data-theme="light"]) .pt-note {
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .pt-table {
+        font-size: 0.8125rem;
+      }
+      .pt-table th,
+      .pt-table td {
+        padding: 0.5rem 0.625rem;
+      }
+    }
+  }
+</style>

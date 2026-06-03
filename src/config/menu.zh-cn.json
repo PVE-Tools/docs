@@ -1,0 +1,132 @@
+{
+  "main": [
+    {
+      "name": "首页",
+      "url": "/"
+    },
+    {
+      "name": "使用指南",
+      "url": "/guide/"
+    },
+    {
+      "name": "高级教程",
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "全部教程",
+          "url": "/advanced/"
+        }
+      ]
+    },
+    {
+      "name": "更新日志",
+      "url": "/update/"
+    },
+    {
+      "name": "法律条款",
+      "url": "",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "用户协议",
+          "url": "/ula/"
+        },
+        {
+          "name": "隐私政策",
+          "url": "/privacy-policy/"
+        }
+      ]
+    },
+    {
+      "name": "赞助",
+      "url": "/sponsor/"
+    },
+    {
+      "name": "GitHub",
+      "url": "https://github.com/PVE-Tools/PVE-Tools-9"
+    }
+  ],
+  "footer": {
+    "community": {
+      "title": "社区",
+      "links": [
+        {
+          "name": "GitHub Issues",
+          "url": "https://github.com/PVE-Tools/PVE-Tools-9/issues"
+        },
+        {
+          "name": "GitHub Discussions",
+          "url": "https://github.com/PVE-Tools/PVE-Tools-9/discussions"
+        },
+        {
+          "name": "QQ 群: 1031976463",
+          "url": "https://qm.qq.com/q/pvetools"
+        },
+        {
+          "name": "Telegram: @pvetools233",
+          "url": "https://t.me/pvetools233"
+        }
+      ]
+    },
+    "help_links": {
+      "title": "快速链接",
+      "links": [
+        {
+          "name": "使用指南",
+          "url": "/guide/"
+        },
+        {
+          "name": "功能特性",
+          "url": "/features/"
+        },
+        {
+          "name": "常见问题",
+          "url": "/faq/"
+        },
+        {
+          "name": "更新日志",
+          "url": "/update/"
+        },
+        {
+          "name": "赞助",
+          "url": "/sponsor/"
+        },
+        {
+          "name": "付费支持",
+          "url": "/pay/"
+        },
+        {
+          "name": "隐私政策",
+          "url": "/privacy-policy/"
+        }
+      ]
+    },
+    "about": {
+      "title": "关于",
+      "links": [
+        {
+          "name": "关于网站",
+          "url": "/zh-cn/about/"
+        }
+      ]
+    },
+    "company": {
+      "title": "法律与归档",
+      "links": [
+        {
+          "name": "用户协议 (ULA/TOS)",
+          "url": "/ula/"
+        },
+        {
+          "name": "归档说明",
+          "url": "/eol/"
+        },
+        {
+          "name": "开发计划",
+          "url": "/todo/"
+        }
+      ]
+    }
+  }
+}

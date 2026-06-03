@@ -1,0 +1,307 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+import yaml from "js-yaml";
+
+interface Sponsor {
+  name: string;
+  date: string;
+  note?: string;
+}
+
+interface SponsorsData {
+  sponsors: Sponsor[];
+}
+
+const sponsorsPath = path.resolve(process.cwd(), "src/config/sponsors.yml");
+const sponsorsData = yaml.load(fs.readFileSync(sponsorsPath, "utf-8")) as SponsorsData;
+
+sponsorsData.sponsors = (sponsorsData.sponsors || []).map((s) => ({
+  ...s,
+  date: s.date instanceof Date
+    ? `${s.date.getFullYear()}-${String(s.date.getMonth() + 1).padStart(2, "0")}-${String(s.date.getDate()).padStart(2, "0")}`
+    : String(s.date || ""),
+}));
+
+const sponsorsJSON = JSON.stringify(sponsorsData);
+const locale = (Astro.currentLocale || "en").toLowerCase();
+const isZh = locale === "zh-cn";
+
+const t = {
+  channels: isZh ? "赞助方式" : "How to Support",
+  thanks: isZh ? "部分支持者" : "Some Supporters",
+  wechat: isZh ? "微信赞赏" : "WeChat Pay",
+  wechatAlt: isZh ? "微信收款码" : "WeChat QR Code",
+  alipay: isZh ? "支付宝赞赏" : "Alipay",
+  alipayAlt: isZh ? "支付宝收款码" : "Alipay QR Code",
+  afdian: isZh ? "爱发电" : "Afdian",
+  afdianAlt: isZh ? "爱发电收款码" : "Afdian QR Code",
+  noData: isZh ? "暂无赞助记录" : "No sponsors yet",
+};
+
+const channels = [
+  { icon: "/icons/wechat.svg", name: t.wechat, qr: "/sponsor/wechat.svg", alt: t.wechatAlt },
+  { icon: "/icons/alipay.svg", name: t.alipay, qr: "/sponsor/alipay.svg", alt: t.alipayAlt },
+  { icon: "/icons/afdian.svg", name: t.afdian, qr: "/sponsor/ifadian.svg", alt: t.afdianAlt },
+];
+---
+
+<div class="sponsor-page" data-locale={locale} data-t-no-data={t.noData} data-sponsors={sponsorsJSON}>
+  <section class="donate-section">
+    <h2 class="donate-title">{t.channels}</h2>
+    <div class="donate-grid">
+      {
+        channels.map((ch) => (
+          <div class="donate-card">
+            <div class="donate-header">
+              <img src={ch.icon} alt="" class="donate-icon" />
+              <span class="donate-name">{ch.name}</span>
+            </div>
+            <div class="qr-frame">
+              <img src={ch.qr} alt={ch.alt} class="qr-img" loading="lazy" />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="thanks-section">
+    <h3 class="thanks-title">{t.thanks}</h3>
+    <div class="sponsor-list" id="sponsor-list"></div>
+    <div class="sponsor-detail" id="sponsor-detail"><span id="sd-text"></span></div>
+  </section>
+</div>
+
+<script>
+  interface Sponsor {
+    name: string;
+    date: string;
+    note?: string;
+  }
+
+  interface SponsorsData {
+    sponsors: Sponsor[];
+  }
+
+  function escapeHTML(str: string): string {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderSponsorList(sponsors: Sponsor[]): string {
+    if (sponsors.length === 0) {
+      const noData = document.querySelector('.sponsor-page')?.getAttribute('data-t-no-data') || 'No sponsors yet';
+      return `<p class="empty-hint">${noData}</p>`;
+    }
+    return sponsors
+      .map((s, i) => `<span class="sponsor-name" data-idx="${i}">${escapeHTML(s.name)}</span>`)
+      .join('');
+  }
+
+  function showDetail(sponsor: Sponsor) {
+    const detail = document.getElementById('sponsor-detail');
+    const textEl = document.getElementById('sd-text');
+    if (!detail || !textEl) return;
+
+    let text = `${sponsor.name} · ${sponsor.date}`;
+    if (sponsor.note) text += ` · ${sponsor.note}`;
+    textEl.textContent = text;
+    detail.classList.add('visible');
+  }
+
+  function hideDetail() {
+    const detail = document.getElementById('sponsor-detail');
+    if (detail) detail.classList.remove('visible');
+  }
+
+  let sponsorsData: Sponsor[] = [];
+
+  function bindEvents() {
+    document.querySelectorAll<HTMLElement>('.sponsor-name[data-idx]').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        const idx = Number(el.getAttribute('data-idx'));
+        if (sponsorsData[idx]) showDetail(sponsorsData[idx]);
+      });
+    });
+
+    const list = document.getElementById('sponsor-list');
+    if (list) {
+      list.addEventListener('mouseleave', hideDetail);
+    }
+  }
+
+  function initSponsors() {
+    const container = document.querySelector('.sponsor-page');
+    const raw = container?.getAttribute('data-sponsors');
+    if (!raw) return;
+    const data: SponsorsData = JSON.parse(raw);
+    sponsorsData = data.sponsors || [];
+    document.getElementById('sponsor-list')!.innerHTML = renderSponsorList(sponsorsData);
+    bindEvents();
+  }
+
+  initSponsors();
+</script>
+
+<style>
+  @layer starlight.components {
+    .donate-section {
+      margin-bottom: 3rem;
+    }
+
+    .donate-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      color: var(--sl-color-white);
+    }
+
+    .donate-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .donate-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin: 0 !important; /* 覆盖 Starlight .sl-markdown-content 的兄弟 margin */
+      padding: 2rem 1.5rem;
+      border-radius: 1rem;
+      background: color-mix(in srgb, var(--sl-color-gray-6) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--sl-color-gray-6) 30%, transparent);
+      transition: all 0.2s ease;
+    }
+
+    .donate-card:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+      background: color-mix(in srgb, var(--sl-color-gray-6) 25%, transparent);
+    }
+
+    :global([data-theme="light"]) .donate-card {
+      background: #ffffff;
+      border-color: #e2e8f0;
+    }
+
+    :global([data-theme="light"]) .donate-card:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .donate-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .donate-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    :global([data-theme="light"]) .donate-icon {
+      filter: none;
+    }
+
+    .donate-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+
+    /* QR 兼容层：div 容器强制统一尺寸，消除不同 intrinsic size SVG 的渲染差异 */
+    .qr-frame {
+      width: 100%;
+      max-width: 200px;
+      aspect-ratio: 1;
+      background: white;
+      border-radius: 0.75rem;
+      padding: 0.5rem;
+      box-sizing: border-box;
+    }
+
+    .qr-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .thanks-section {
+      padding-top: 2rem;
+      border-top: 1px solid color-mix(in srgb, var(--sl-color-gray-6) 30%, transparent);
+    }
+
+    .thanks-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--sl-color-gray-3);
+      margin-bottom: 1rem;
+    }
+
+    :global(.sponsor-list) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    :global(.sponsor-name) {
+      display: inline-block;
+      position: relative;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8125rem;
+      background: color-mix(in srgb, var(--sl-color-gray-6) 25%, transparent);
+      color: var(--sl-color-gray-2);
+      border: 1px solid color-mix(in srgb, var(--sl-color-gray-6) 40%, transparent);
+      cursor: default;
+    }
+
+    .sponsor-detail {
+      margin-top: 1rem;
+      padding: 0.625rem 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--sl-color-gray-2);
+      background: color-mix(in srgb, var(--sl-color-gray-6) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--sl-color-gray-6) 30%, transparent);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.2s ease, max-height 0.2s ease;
+    }
+
+    .sponsor-detail.visible {
+      opacity: 1;
+      max-height: 60px;
+    }
+
+    :global([data-theme="light"]) .sponsor-detail {
+      color: #1e293b;
+      background: #f8fafc;
+      border-color: #e2e8f0;
+    }
+
+    :global(.sponsor-name:hover) {
+      background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+      border-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
+    }
+
+    :global(.empty-hint) {
+      color: var(--sl-color-gray-4);
+      font-style: italic;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+      .donate-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+</style>

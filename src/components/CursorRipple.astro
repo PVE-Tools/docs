@@ -1,0 +1,187 @@
+---
+// CursorRipple - 锐利直线轨迹 + 水波晕开退去
+---
+
+<canvas id="cursor-ripple" aria-hidden="true" />
+
+<style>
+  #cursor-ripple {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  class RippleTrail {
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private path: Array<{ x: number; y: number; t: number }> = [];
+    private ripples: Array<{ x: number; y: number; t: number }> = [];
+    private mx = -999;
+    private my = -999;
+    private prevMx = -999;
+    private prevMy = -999;
+    private animId = 0;
+    private dpr = 1;
+    private isDark = false;
+    private lastRipple = 0;
+
+    private readonly TRAIL_LIFE = 600;
+    private readonly MAX_PATH = 60;
+    private readonly MAX_RIPPLES = 5;
+    private readonly RIPPLE_GAP = 300;
+    private readonly MIN_MOVE = 8;
+
+    constructor(canvas: HTMLCanvasElement) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext("2d", { alpha: true })!;
+      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.isDark = document.documentElement.getAttribute("data-theme") === "dark";
+
+      this.resize();
+      this.bind();
+      this.loop();
+    }
+
+    private resize(): void {
+      this.canvas.width = window.innerWidth * this.dpr;
+      this.canvas.height = window.innerHeight * this.dpr;
+      this.canvas.style.width = window.innerWidth + "px";
+      this.canvas.style.height = window.innerHeight + "px";
+      this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    }
+
+    private bind(): void {
+      window.addEventListener("mousemove", (e) => {
+        this.mx = e.clientX;
+        this.my = e.clientY;
+      }, { passive: true });
+      window.addEventListener("resize", () => this.resize(), { passive: true });
+      new MutationObserver(() => {
+        this.isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    }
+
+    private loop = (): void => {
+      const now = performance.now();
+      const ctx = this.ctx;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const c = this.isDark
+        ? { r: 129, g: 140, b: 248 }
+        : { r: 79, g: 70, b: 229 };
+
+      // --- 采样轨迹点 ---
+      const dx = this.mx - this.prevMx;
+      const dy = this.my - this.prevMy;
+      if (Math.sqrt(dx * dx + dy * dy) > this.MIN_MOVE) {
+        this.path.push({ x: this.mx, y: this.my, t: now });
+        if (this.path.length > this.MAX_PATH) this.path.shift();
+
+        // 水波生成
+        if (now - this.lastRipple > this.RIPPLE_GAP) {
+          this.ripples.push({ x: this.mx, y: this.my, t: now });
+          if (this.ripples.length > this.MAX_RIPPLES) this.ripples.shift();
+          this.lastRipple = now;
+        }
+      }
+      this.prevMx = this.mx;
+      this.prevMy = this.my;
+
+      // --- 绘制水波扩散 ---
+      for (let i = this.ripples.length - 1; i >= 0; i--) {
+        const r = this.ripples[i];
+        const age = now - r.t;
+        const life = this.TRAIL_LIFE;
+        if (age > life) { this.ripples.splice(i, 1); continue; }
+
+        const p = age / life;
+        const radius = p * 50;
+        const alpha = (1 - p) * 0.04;
+
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},${alpha})`;
+        ctx.lineWidth = 0.5 * (1 - p);
+        ctx.stroke();
+      }
+
+      // --- 绘制直线轨迹 ---
+      const len = this.path.length;
+      if (len < 2) {
+        this.animId = requestAnimationFrame(this.loop);
+        return;
+      }
+
+      // 清理过期点
+      while (this.path.length > 0 && now - this.path[0].t > this.TRAIL_LIFE) {
+        this.path.shift();
+      }
+
+      const alive = this.path.length;
+      if (alive < 2) {
+        this.animId = requestAnimationFrame(this.loop);
+        return;
+      }
+
+      // 主轨迹线
+      ctx.beginPath();
+      ctx.moveTo(this.path[0].x, this.path[0].y);
+      for (let i = 1; i < alive; i++) {
+        ctx.lineTo(this.path[i].x, this.path[i].y);
+      }
+      ctx.strokeStyle = `rgba(${c.r},${c.g},${c.b},0.18)`;
+      ctx.lineWidth = 1;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.stroke();
+
+      // 头部光点
+      const head = this.path[alive - 1];
+      const grad = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 4);
+      grad.addColorStop(0, `rgba(${c.r},${c.g},${c.b},0.15)`);
+      grad.addColorStop(1, `rgba(${c.r},${c.g},${c.b},0)`);
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // 尾部衰减 — 已过期的点向外晕开消散
+      for (let i = 0; i < alive; i++) {
+        const p = this.path[i];
+        const age = now - p.t;
+        const progress = age / this.TRAIL_LIFE;
+
+        // 只处理尾部已经过期一半以上的点
+        if (progress < 0.5) continue;
+
+        const fade = (progress - 0.5) * 2; // 0 → 1
+        const expand = fade * 2;
+        const alpha = (1 - fade) * 0.05;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, expand, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${c.r},${c.g},${c.b},${alpha})`;
+        ctx.fill();
+      }
+
+      this.animId = requestAnimationFrame(this.loop);
+    };
+
+    destroy(): void {
+      cancelAnimationFrame(this.animId);
+    }
+  }
+
+  const el = document.getElementById("cursor-ripple") as HTMLCanvasElement;
+  if (el && !matchMedia("(pointer: coarse)").matches) {
+    new RippleTrail(el);
+  }
+</script>

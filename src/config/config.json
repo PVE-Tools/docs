@@ -1,0 +1,35 @@
+{
+  "site": {
+    "title": "PVE Tools Pro",
+    "logo": "/src/assets/pve-logo.svg",
+    "logo_darkmode": "/src/assets/pve-logo-dark.svg",
+    "logo_width": "36",
+    "logo_height": "36",
+    "logo_text": "PVE Tools Pro"
+  },
+
+  "settings": {
+    "search": true,
+    "theme_switcher": true
+  },
+
+  "params": {
+    "footer_contact": {
+      "enable": false,
+      "action": "#"
+    },
+    "copyright": "Copyright &copy; 2026 <a class=\"text-primary hover:underline no-underline\" href=\"https://github.com/PVE-Tools\" target=\"_blank\" rel=\"noopener\" aria-label=\"PVE Tools\">Ciriu Networks</a>. PVE Tools Pro is open source."
+  },
+
+  "navigation_button": {
+    "enable": true,
+    "label": "快速开始",
+    "translations": {
+      "en": "Get Started"
+    },
+    "link": "/guide/",
+    "link_translations": {
+      "en": "/en/guide/"
+    }
+  }
+}

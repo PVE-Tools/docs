@@ -1,0 +1,38 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# generated sponsor data (build-time)
+public/api/sponsors.json
+
+# playwright cache
+playwright/
+.playwright/
+.playwright-mcp/
+
+# claude config
+.claude/
+
+# Visual code cache
+.vscode/
+
+# nodejs package cache
+package-lock.json

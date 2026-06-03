@@ -1,0 +1,14 @@
+---
+const { head } = Astro.locals.starlightRoute;
+---
+
+{head.map(({ tag: Tag, attrs, content }) => <Tag {...attrs} set:html={content} />)}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Latin/MiSansLatin-Medium.min.css"
+  crossorigin="anonymous"
+/>
+<style set:html={`body, body *, .sl-markdown-content { font-family: -apple-system, BlinkMacSystemFont, "MiSans Latin", "Microsoft YaHei", "Noto Sans SC", sans-serif !important; }`}></style>
+
+
