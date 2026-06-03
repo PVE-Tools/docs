@@ -1,6 +1,6 @@
 ---
-import config from "@/config/config.json";
-import social from "@/config/social.json";
+import config from "@/config/config.json" assert { type: "json" };
+import social from "@/config/social.json" assert { type: "json" };
 import { Icon } from "@astrojs/starlight/components";
 import { markdownify } from "@/lib/utils/textConverter";
 import { getTranslations } from "@/lib/utils/languagePerser";
