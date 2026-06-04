@@ -9,6 +9,10 @@
 set -u
 
 APP_NAME="PVE Tools Pro"
+VERSION="0.1.0-beta"
+RELEASE_CODE="Jee"
+
+
 CF_TRACE_URL="https://www.cloudflare.com/cdn-cgi/trace"
 GITHUB_PROXY_PREFIX="https://ghfast.top/"
 SHELL_SCRIPT_URL="https://raw.githubusercontent.com/PVE-Tools/PVE-Tools-9/main/PVE-Tools.sh"
@@ -19,6 +23,19 @@ COUNTRY_CODE=""
 USE_GITHUB_PROXY=0
 SELECTED_VERSION=""
 TMP_DIR=""
+
+ASCII_ART=$(cat <<'EOF'
+    ____ _    ________   ______            __        ____           
+   / __ \ |  / / ____/  /_  __/___  ____  / /____   / __ \_________ 
+  / /_/ / | / / __/      / / / __ \/ __ \/ / ___/  / /_/ / ___/ __ \
+ / ____/| |/ / /___     / / / /_/ / /_/ / (__  )  / ____/ /  / /_/ /
+/_/ __  |___/_____/    /_/  \____/\____/_/____/  /_/   /_/   \____/ 
+   / /   ____ ___  ______  _____/ /_  ___  _____                    
+  / /   / __ `/ / / / __ \/ ___/ __ \/ _ \/ ___/                    
+ / /___/ /_/ / /_/ / / / / /__/ / / /  __/ /                        
+/_____/\__,_/\__,_/_/ /_/\___/_/ /_/\___/_/                                                                                        
+EOF
+)
 
 setup_colors() {
     if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
@@ -202,9 +219,11 @@ github_url() {
 
 show_header() {
     echo
-    echo -e "${WHITE}========================================${NC}"
-    echo -e "${WHITE}${APP_NAME} 启动器${NC}"
-    echo -e "${WHITE}========================================${NC}"
+    echo -e "${WHITE}----------------------------------------${NC}"
+    echo -e "${WHITE}${ASCII_ART}${WHITE}${NC}"
+    echo -e "${WHITE}Version: ${VERSION}${WHITE} | Release Code: ${RELEASE_CODE}${NC}"
+    echo -e "${WHITE}----------------------------------------${NC}"
+
     if [[ -n "$COUNTRY_CODE" ]]; then
         echo "当前地区: $COUNTRY_CODE"
     else
@@ -223,14 +242,14 @@ show_version_diff() {
     cat <<'EOF'
 请选择要启动的版本:
 
-1) Go 版本
+1) Go 版本 [暂未上线]
    - 新一代重构版本，模块化架构，交互和环境校验更清晰。
    - 适合体验后续主线、TUI/CLI 新交互和更长期的维护方向。
    - 仍处于重构迭代期，部分 Shell 版功能可能尚未完全覆盖。
 
 2) Shell 版本
    - 经典单文件脚本，功能覆盖更完整，适合继续使用现有成熟流程。
-   - 当前已进入归档维护状态，后续主要修复严重问题，不再扩展新功能。
+   - 推荐生产服务器使用已经受到时间验证的版本。
 
 0) 退出
 EOF
@@ -368,6 +387,7 @@ prompt_shell_alias_install() {
             ;;
         *)
             log_info "已跳过本地保存。"
+            log_info "即将启动程序...请稍候..."
             ;;
     esac
 }
@@ -422,7 +442,7 @@ run_go_version() {
 
     log_info "正在下载 Go 版本: $(basename "$asset_url")"
     if ! download_file "$download_url" "$target"; then
-        log_error "Go 版本下载失败。"
+        log_error "Go 版本下载失败。请尝试手动下载。"
         echo "原始地址: $asset_url" >&2
         if [[ "$USE_GITHUB_PROXY" -eq 1 ]]; then
             echo "加速地址: $download_url" >&2
@@ -474,7 +494,8 @@ main() {
     show_header
 
     if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
-        log_warn "建议使用 root 用户运行，后续功能可能需要 root 权限。"
+        log_error "本脚本必须以 root 用户直接运行，不支持普通用户或 sudo 提权。"
+        exit 1
     fi
 
     select_version
