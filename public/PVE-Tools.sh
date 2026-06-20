@@ -16,8 +16,8 @@ RELEASE_CODE="Jee"
 CF_TRACE_URL="https://www.cloudflare.com/cdn-cgi/trace"
 GITHUB_PROXY_PREFIX="https://ghfast.top/"
 SHELL_SCRIPT_URL="https://raw.githubusercontent.com/PVE-Tools/PVE-Tools-9/main/PVE-Tools.sh"
-GO_RELEASES_API_URL="https://api.github.com/repos/PVE-Tools/PVE-Tools-Go/releases"
-GO_RELEASE_BASE_URL="https://github.com/PVE-Tools/PVE-Tools-Go/releases/latest/download"
+# GO_RELEASES_API_URL="https://api.github.com/repos/PVE-Tools/PVE-Tools-Go/releases"
+# GO_RELEASE_BASE_URL="https://github.com/PVE-Tools/PVE-Tools-Go/releases/latest/download"
 
 COUNTRY_CODE=""
 USE_GITHUB_PROXY=0
@@ -240,73 +240,38 @@ show_header() {
 
 show_version_diff() {
     cat <<'EOF'
-请选择要启动的版本:
-
-1) Go 版本 [暂未上线]
-   - 新一代重构版本，模块化架构，交互和环境校验更清晰。
-   - 适合体验后续主线、TUI/CLI 新交互和更长期的维护方向。
-   - 仍处于重构迭代期，部分 Shell 版功能可能尚未完全覆盖。
-
-2) Shell 版本
-   - 经典单文件脚本，功能覆盖更完整，适合继续使用现有成熟流程。
-   - 推荐生产服务器使用已经受到时间验证的版本。
-
-0) 退出
+========================================
+PVE Tools Pro 启动器
+========================================
 EOF
 }
 
 select_version() {
-    local choice=""
-
-    if [[ ! -t 0 ]]; then
-        log_error "当前不是交互式终端，无法显示版本选择菜单。"
-        echo "请使用: bash <(curl -sSL https://pve.oowo.cc/PVE-Tools.sh)" >&2
-        exit 1
-    fi
-
-    while true; do
-        show_version_diff
-        echo
-        read -r -p "请输入选项 [1/2/0]: " choice
-        case "$choice" in
-            1|go|Go|GO)
-                SELECTED_VERSION="go"
-                return
-                ;;
-            2|shell|Shell|SHELL|"")
-                SELECTED_VERSION="shell"
-                return
-                ;;
-            0|q|Q|quit|exit)
-                echo "已退出。"
-                exit 0
-                ;;
-            *)
-                log_warn "无效选择，请输入 1、2 或 0。"
-                ;;
-        esac
-    done
+    show_version_diff
+    echo
+    log_info "自动选择 Shell 版本"
+    SELECTED_VERSION="shell"
 }
 
-detect_go_arch() {
-    local machine=""
-
-    machine="$(uname -m 2>/dev/null || true)"
-    case "$machine" in
-        x86_64|amd64)
-            echo "amd64"
-            ;;
-        aarch64|arm64)
-            echo "arm64"
-            ;;
-        riscv64)
-            echo "riscv64"
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-}
+# detect_go_arch() {
+#     local machine=""
+# 
+#     machine="$(uname -m 2>/dev/null || true)"
+#     case "$machine" in
+#         x86_64|amd64)
+#             echo "amd64"
+#             ;;
+#         aarch64|arm64)
+#             echo "arm64"
+#             ;;
+#         riscv64)
+#             echo "riscv64"
+#             ;;
+#         *)
+#             return 1
+#             ;;
+#     esac
+# }
 
 detect_shell_rc_file() {
     local home_dir="${HOME:-}"
@@ -392,70 +357,70 @@ prompt_shell_alias_install() {
     esac
 }
 
-resolve_go_asset_url() {
-    local arch="$1"
-    local releases_json=""
-    local asset_urls=""
-    local asset_name=""
-    local match=""
+# resolve_go_asset_url() {
+#     local arch="$1"
+#     local releases_json=""
+#     local asset_urls=""
+#     local asset_name=""
+#     local match=""
+# 
+#     releases_json="$(fetch_github_stdout "$GO_RELEASES_API_URL" 10 || true)"
+#     if [[ -n "$releases_json" ]]; then
+#         asset_urls="$(printf '%s\n' "$releases_json" | sed -nE 's/.*"browser_download_url":[[:space:]]*"([^"]+)".*/\1/p')"
+# 
+#         for asset_name in \
+#             "pve-tools-linux-${arch}" \
+#             "pve-tools-beta-linux-${arch}" \
+#             "pve-tools-preview-linux-${arch}"; do
+#             match="$(printf '%s\n' "$asset_urls" | grep "/${asset_name}$" | head -n 1 || true)"
+#             if [[ -n "$match" ]]; then
+#                 printf '%s' "$match"
+#                 return 0
+#             fi
+#         done
+#     fi
+# 
+#     printf '%s/pve-tools-linux-%s' "$GO_RELEASE_BASE_URL" "$arch"
+# }
 
-    releases_json="$(fetch_github_stdout "$GO_RELEASES_API_URL" 10 || true)"
-    if [[ -n "$releases_json" ]]; then
-        asset_urls="$(printf '%s\n' "$releases_json" | sed -nE 's/.*"browser_download_url":[[:space:]]*"([^"]+)".*/\1/p')"
-
-        for asset_name in \
-            "pve-tools-linux-${arch}" \
-            "pve-tools-beta-linux-${arch}" \
-            "pve-tools-preview-linux-${arch}"; do
-            match="$(printf '%s\n' "$asset_urls" | grep "/${asset_name}$" | head -n 1 || true)"
-            if [[ -n "$match" ]]; then
-                printf '%s' "$match"
-                return 0
-            fi
-        done
-    fi
-
-    printf '%s/pve-tools-linux-%s' "$GO_RELEASE_BASE_URL" "$arch"
-}
-
-run_go_version() {
-    local arch=""
-    local asset_url=""
-    local download_url=""
-    local target=""
-    local status=0
-
-    if [[ "$(uname -s 2>/dev/null)" != "Linux" ]]; then
-        log_error "Go 版本当前仅提供 Linux 二进制。"
-        exit 1
-    fi
-
-    if ! arch="$(detect_go_arch)"; then
-        log_error "暂不支持当前 CPU 架构: $(uname -m 2>/dev/null || echo unknown)"
-        exit 1
-    fi
-
-    TMP_DIR="$(mktemp -d /tmp/pve-tools-launcher.XXXXXX)"
-    target="${TMP_DIR}/pve-tools"
-    asset_url="$(resolve_go_asset_url "$arch")"
-    download_url="$(github_url "$asset_url")"
-
-    log_info "正在下载 Go 版本: $(basename "$asset_url")"
-    if ! download_file "$download_url" "$target"; then
-        log_error "Go 版本下载失败。请尝试手动下载。"
-        echo "原始地址: $asset_url" >&2
-        if [[ "$USE_GITHUB_PROXY" -eq 1 ]]; then
-            echo "加速地址: $download_url" >&2
-        fi
-        exit 1
-    fi
-
-    chmod +x "$target"
-    log_info "启动 Go 版本..."
-    "$target"
-    status=$?
-    exit "$status"
-}
+# run_go_version() {
+#     local arch=""
+#     local asset_url=""
+#     local download_url=""
+#     local target=""
+#     local status=0
+# 
+#     if [[ "$(uname -s 2>/dev/null)" != "Linux" ]]; then
+#         log_error "Go 版本当前仅提供 Linux 二进制。"
+#         exit 1
+#     fi
+# 
+#     if ! arch="$(detect_go_arch)"; then
+#         log_error "暂不支持当前 CPU 架构: $(uname -m 2>/dev/null || echo unknown)"
+#         exit 1
+#     fi
+# 
+#     TMP_DIR="$(mktemp -d /tmp/pve-tools-launcher.XXXXXX)"
+#     target="${TMP_DIR}/pve-tools"
+#     asset_url="$(resolve_go_asset_url "$arch")"
+#     download_url="$(github_url "$asset_url")"
+# 
+#     log_info "正在下载 Go 版本: $(basename "$asset_url")"
+#     if ! download_file "$download_url" "$target"; then
+#         log_error "Go 版本下载失败。请尝试手动下载。"
+#         echo "原始地址: $asset_url" >&2
+#         if [[ "$USE_GITHUB_PROXY" -eq 1 ]]; then
+#             echo "加速地址: $download_url" >&2
+#         fi
+#         exit 1
+#     fi
+# 
+#     chmod +x "$target"
+#     log_info "启动 Go 版本..."
+#     "$target"
+#     status=$?
+#     exit "$status"
+# }
 
 run_shell_version() {
     local script_path=""
@@ -498,19 +463,7 @@ main() {
         exit 1
     fi
 
-    select_version
-    case "$SELECTED_VERSION" in
-        go)
-            run_go_version
-            ;;
-        shell)
-            run_shell_version
-            ;;
-        *)
-            log_error "内部错误: 未知版本选择 $SELECTED_VERSION"
-            exit 1
-            ;;
-    esac
+    run_shell_version
 }
 
 main "$@"
