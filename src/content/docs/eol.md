@@ -1,7 +1,55 @@
 ---
 title: Shell 版归档说明
 description: 关于 PVE Tools Pro Shell 版本（main 分支）停止功能更新与全面转向 Go 语言重构的说明
+head:
+  - tag: style
+    content: |
+      .deprecated-banner {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        color: #fff;
+        padding: 1.25rem 1.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+      }
+      .deprecated-banner .icon {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        stroke: #fff;
+      }
+      .deprecated-banner .content h3 {
+        margin: 0 0 0.35rem 0;
+        font-size: 1.15rem;
+        color: #fff;
+        letter-spacing: 0.02em;
+      }
+      .deprecated-banner .content p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #fecaca;
+        line-height: 1.6;
+      }
+      .deprecated-banner .content a {
+        color: #fef08a;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .deprecated-banner .content a:hover {
+        color: #fff;
+      }
 ---
+
+<div class="deprecated-banner">
+  <svg class="icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <div class="content">
+    <h3>本文档内容已失效</h3>
+    <p>本文所述的「全面转向 Go 语言重构」计划已终止。Go 版本因代码质量问题不再作为主力维护方向。<br/>请参阅 <a href="/why-go-version-stalled/">《为什么Go版本憋不出来？》</a> 了解完整的技术决策说明。</p>
+  </div>
+</div>
 
 # 致 PVE-Tools-9 用户：关于项目重构、开源边界与未来的几句心里话
 

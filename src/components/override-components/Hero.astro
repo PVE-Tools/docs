@@ -22,6 +22,14 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
   {title && <h1 set:html={title} class="mb-8 text-center rounded-2xl" />}
   {tagline && <p set:html={tagline} class="text-xl text-center" />}
 
+  {!is404 && (
+    <a class="hero-notice" href="/why-go-version-stalled/">
+      <svg class="hero-notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span class="hero-notice-text"><strong>关于 Go 版本：</strong>Go 版本已暂时搁置，主力开发回到 Shell 版本。了解详情</span>
+      <svg class="hero-notice-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  )}
+
   {
     !is404 && (
       <div class="mt-12 max-w-4xl w-full">
@@ -54,6 +62,47 @@ const is404 = Astro.locals.starlightRoute?.id === "404";
       margin: auto;
       border: 1px solid
         color-mix(in srgb, var(--sl-color-white) 5%, transparent);
+    }
+
+    .hero-notice {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      background: linear-gradient(135deg, #4F46E5 0%, #6366f1 100%);
+      color: #fff;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+      transition: all 0.2s ease;
+      max-width: 640px;
+    }
+    .hero-notice:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    }
+    .hero-notice-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+    }
+    .hero-notice-text {
+      flex: 1;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .hero-notice-text :global(strong) {
+      color: #fff;
+    }
+    .hero-notice-arrow {
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      opacity: 0.7;
+    }
+    :global([data-theme="light"]) .hero-notice {
+      background: linear-gradient(135deg, #4F46E5 0%, #7c3aed 100%);
     }
 
     @media (max-width: 940px) {

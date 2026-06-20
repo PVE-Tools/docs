@@ -10,6 +10,7 @@
         { "label": "Features", "slug": "features", "translations": { "zh-CN": "功能特性" } },
         { "label": "Submit Plugin", "slug": "submit-plugin", "translations": { "zh-CN": "提交插件" } },
         { "label": "FAQ", "slug": "faq", "translations": { "zh-CN": "常见问题" } },
+        { "label": "Why Go Version Stalled", "slug": "why-go-version-stalled", "translations": { "zh-CN": "为什么Go版本憋不出来？" } },
         { "label": "Archival Notice", "slug": "eol", "translations": { "zh-CN": "归档说明" } }
       ]
     },
