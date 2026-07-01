@@ -1,5 +1,5 @@
 {
-  "name": "pve-tools-docs",
+  "name": "pve-tools-9-vite-press",
   "main": "src/worker.js",
   "compatibility_date": "2026-06-03",
   "assets": {
