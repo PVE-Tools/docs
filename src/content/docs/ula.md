@@ -5,8 +5,6 @@ description: PVE Tools Pro 最终用户许可协议与服务条款
 
 项目：PVE Tools Pro
 
-> 在找Shell版本的ULA/TOS，请前往[Shell 版本的ULA/TOS](/old-ula)。
-
 版本：4.0
 
 生效日期：2026-06-03
