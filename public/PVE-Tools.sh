@@ -11,16 +11,16 @@
 
 # 模块化入口：本地开发 source 源码；远程 curl 运行时下载 dist 单文件执行。
 
-PVE_TOOLS_REMOTE_BASE="${PVE_TOOLS_REMOTE_BASE:-https://raw.githubusercontent.com/PVE-Tools/PVE-Tools-9/main}"
+PVE_TOOLS_REPO="${PVE_TOOLS_REPO:-PVE-Tools/PVE-Tools-9}"
+PVE_TOOLS_RELEASE_API_URL="${PVE_TOOLS_RELEASE_API_URL:-https://api.github.com/repos/${PVE_TOOLS_REPO}/releases/latest}"
+PVE_TOOLS_RELEASE_PAGE_URL="${PVE_TOOLS_RELEASE_PAGE_URL:-https://github.com/${PVE_TOOLS_REPO}/releases/latest}"
 PVE_TOOLS_REMOTE_MIRROR_PREFIX="${PVE_TOOLS_REMOTE_MIRROR_PREFIX:-https://ghfast.top/}"
-PVE_TOOLS_REMOTE_DIST_URL="${PVE_TOOLS_REMOTE_DIST_URL:-$PVE_TOOLS_REMOTE_BASE/dist/PVE-Tools.sh}"
 PVE_TOOLS_CONNECT_TIMEOUT="${PVE_TOOLS_CONNECT_TIMEOUT:-10}"
 PVE_TOOLS_DOWNLOAD_TIMEOUT="${PVE_TOOLS_DOWNLOAD_TIMEOUT:-120}"
 PVE_TOOLS_DOWNLOAD_RETRIES="${PVE_TOOLS_DOWNLOAD_RETRIES:-2}"
 
-PVE_TOOLS_RELEASE_PAGE_URL="https://github.com/PVE-Tools/PVE-Tools-9/releases/tag/v10.1.0"
-PVE_TOOLS_RELEASE_ASSET_URL="https://github.com/PVE-Tools/PVE-Tools-9/releases/download/v10.1.0/PVE-Tools.sh"
 PVE_TOOLS_ENTRY_LAST_ERROR=""
+PVE_TOOLS_LATEST_RELEASE_TAG=""
 
 pve_tools_entry_normalize_positive_integer() {
     local variable_name="$1"
@@ -170,6 +170,40 @@ pve_tools_entry_validate_script() {
     return 0
 }
 
+# 通过 GitHub API 获取最新 Release 中 PVE-Tools.sh 资产的下载地址
+pve_tools_entry_get_latest_release_asset_url() {
+    local api_url="$1"
+    local api_response=""
+    local asset_url=""
+    local tag_name=""
+
+    echo "正在从 GitHub API 获取最新版本信息..." >&2
+
+    if command -v curl >/dev/null 2>&1; then
+        api_response=$(curl -sL --connect-timeout "$PVE_TOOLS_CONNECT_TIMEOUT" --max-time 30 "$api_url" 2>/dev/null) || return 1
+    elif command -v wget >/dev/null 2>&1; then
+        api_response=$(wget -qO- --connect-timeout="$PVE_TOOLS_CONNECT_TIMEOUT" --timeout=30 "$api_url" 2>/dev/null) || return 1
+    else
+        PVE_TOOLS_ENTRY_LAST_ERROR="未找到 curl 或 wget"
+        return 1
+    fi
+
+    # 提取版本标签（仅用于显示）
+    tag_name=$(echo "$api_response" | grep -o '"tag_name":"[^"]*"' | head -1 | cut -d'"' -f4)
+
+    # 从 API 响应中提取 PVE-Tools.sh 资产的浏览器下载地址
+    asset_url=$(echo "$api_response" | grep -o "https://github\.com/${PVE_TOOLS_REPO}/releases/download/v[^/]*/PVE-Tools\.sh" | head -1)
+
+    if [[ -z "$asset_url" ]]; then
+        PVE_TOOLS_ENTRY_LAST_ERROR="未在最新 Release 中找到 PVE-Tools.sh 资产文件，或 GitHub API 请求失败"
+        return 1
+    fi
+
+    PVE_TOOLS_LATEST_RELEASE_TAG="${tag_name:-未知}"
+    echo "$asset_url"
+    return 0
+}
+
 pve_tools_entry_download_file() {
     local url="$1"
     local output="$2"
@@ -253,14 +287,14 @@ pve_tools_entry_download_file() {
 pve_tools_entry_print_release_help() {
     cat >&2 <<EOF
 
-错误：PVE-Tools 主程序单文件完整版下载失败，程序尚未启动。
-以上 GitHub 原始源和加速源均未能完成下载。
+错误：PVE-Tools 主程序下载失败，程序尚未启动。
+自动获取最新 Release 或下载均未能完成。
 
 请在另一台能够访问 GitHub 的设备或网络中打开：
 $PVE_TOOLS_RELEASE_PAGE_URL
 
-展开 Assets，下载 PVE-Tools.sh（请勿下载 Source code 的 zip 或 tar.gz 压缩包）。
-直接下载地址：$PVE_TOOLS_RELEASE_ASSET_URL
+在 Releases 页面中找到最新版本，展开 Assets，下载 PVE-Tools.sh
+（请勿下载 Source code 的 zip 或 tar.gz 压缩包）。
 
 下载后可通过 SCP、WinSCP 或 U 盘传到 PVE 主机，然后执行：
   chmod +x PVE-Tools.sh
@@ -308,7 +342,7 @@ if [[ -f "$SCRIPT_DIR/lib/config.sh" && -d "$SCRIPT_DIR/src/modules" ]]; then
         done < <(find "$module_dir" -name '*.sh' -print0 | sort -z)
     done
 else
-    # 远程模式：下载 dist 单文件并执行
+    # 远程模式：从 GitHub Release 获取最新版本并执行
     tmp_dir=""
     if ! tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/pve-tools-entry.XXXXXX")"; then
         echo "错误：无法创建 PVE-Tools 临时目录，程序尚未启动。" >&2
@@ -316,10 +350,17 @@ else
     fi
     trap pve_tools_entry_cleanup EXIT
 
-    if pve_tools_entry_download_file "$PVE_TOOLS_REMOTE_DIST_URL" "$tmp_dir/PVE-Tools.sh"; then
-        echo "主程序校验通过，正在启动 PVE-Tools..."
-        bash "$tmp_dir/PVE-Tools.sh" "$@"
-        exit $?
+    echo "正在获取 PVE-Tools 最新版本..."
+    if release_url=$(pve_tools_entry_get_latest_release_asset_url "$PVE_TOOLS_RELEASE_API_URL"); then
+        echo "发现最新版本：${PVE_TOOLS_LATEST_RELEASE_TAG:-未知}"
+        if pve_tools_entry_download_file "$release_url" "$tmp_dir/PVE-Tools.sh"; then
+            echo "主程序校验通过，正在启动 PVE-Tools..."
+            bash "$tmp_dir/PVE-Tools.sh" "$@"
+            exit $?
+        fi
+        echo "下载失败：$PVE_TOOLS_ENTRY_LAST_ERROR" >&2
+    else
+        echo "获取版本信息失败：$PVE_TOOLS_ENTRY_LAST_ERROR" >&2
     fi
 
     pve_tools_entry_print_release_help
