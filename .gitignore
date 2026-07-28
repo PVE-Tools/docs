@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+*.log
+
+# VitePress 产物
+docs/.vitepress/dist
+docs/.vitepress/cache
