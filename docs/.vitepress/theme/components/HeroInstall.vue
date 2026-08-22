@@ -29,7 +29,7 @@ const copy = async () => {
         <span v-html="copied ? iconCheck : iconCopy" />
       </button>
     </div>
-    <p class="cmd-note">在 PVE 终端粘贴执行 · 需要 Proxmox VE 9.0 以上并以 root 运行</p>
+    <p class="cmd-note">在 PVE 终端粘贴执行 · 需要 Proxmox VE 9.0 以上并以 root 运行 · 追加 --install 可安装为 pvetools 命令</p>
   </div>
 </template>
 

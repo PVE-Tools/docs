@@ -14,7 +14,7 @@ A: 脚本是完全开源的，您可以随时在 GitHub 上查看源代码。它
 A: 本版本（PVE Tools Pro）主要针对 PVE 9.0 (Debian 13) 进行了优化。对于旧版本，虽然部分功能可能兼容，但建议使用对应的旧版脚本。
 
 ## Q: 官方网站和安装地址是什么？
-A: 官方网站为 `https://pve.u3u.icu`。推荐安装命令为 `bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh)`。该入口会按地区自动判断是否使用 GitHub 加速，并让你选择 Go 版本或 Shell 版本；Shell 版本可保存到本地并添加 `pvetools` alias。
+A: 官方网站为 `https://pve.u3u.icu`。推荐启动命令为 `bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh)`，入口会按地区自动判断是否使用 GitHub 加速。默认回车即一次性启动；选择「安装到系统」或追加 `--install` 参数后，可随时用 `pvetools` 命令启动，卸载使用 `pvetools --uninstall`。
 
 ## Q: 执行脚本报错提示 "Command not found"？
 A: 请确保您安装了 `curl` 或 `wget`。如果是在新安装的系统上，可以先运行 `apt update && apt install curl -y`。

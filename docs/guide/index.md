@@ -13,7 +13,41 @@ description: 查看 PVE Tools Pro 的安装命令、运行要求、高风险功�
 bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh)
 ```
 
-该入口脚本会先识别当前地区并决定是否启用 GitHub 加速，然后让你选择 Go 版本或 Shell 版本。Shell 版本会询问是否保存到本地并添加 `pvetools` alias；Go 版本的本机安装提示由 Go 程序内部处理。Go 版本是后续主线重构方向，交互和结构更清晰；Shell 版本功能覆盖更完整，但已进入归档维护状态。
+入口脚本会自动下载最新完整版主程序（按地区判断是否启用 GitHub 加速），默认回车直接启动，一次性使用不留任何文件。
+
+## 安装到系统（可选）
+
+如果希望像普通命令一样随时使用 `pvetools` 启动，有两种方式：
+
+**方式一：运行时选择安装**
+
+执行上面的命令后，在「请选择运行方式」提示中选择 `[2] 安装到系统`，再按需选择：
+
+- `安装系统命令`：复制到 `/usr/local/bin/pvetools`（推荐）
+- `保存并添加别名`：保留在 `/opt/pve-tools/PVE-Tools.sh` 并写入 `.bashrc` 别名
+
+**方式二：非交互参数一键安装**
+
+```bash
+bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh) --install
+```
+
+安装完成后即可随时运行：
+
+```bash
+pvetools          # 启动 PVE-Tools
+pvetools --help   # 查看安装器帮助
+```
+
+已安装的版本自带更新能力：主程序启动时会检查新版本，菜单 8 中的"本地脚本快捷更新"会就地升级 `/usr/local/bin/pvetools`。
+
+### 卸载
+
+```bash
+pvetools --uninstall   # 卸载命令文件、/opt/pve-tools 与 .bashrc 别名标记块
+```
+
+也可以在工具内通过 **菜单 8 → 本地脚本快捷卸载** 完成，它会同时清理日志、备份目录以及安装器写入的系统命令和别名。
 
 ## 注意事项
 
