@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "pve-tools-docs",
+  "name": "pve-tools-9-vite-press",
   "compatibility_date": "2026-07-26",
   "assets": {
     // VitePress 构建产物目录
