@@ -98,7 +98,8 @@ bash <(curl -sSL https://pve.ciriu.com/PVE-Tools.sh) --install
 
 如果你喜欢旧域名，或担心它被他人抢注用于仿冒，可以通过爱发电支持：
 
-- 爱发电：<https://afdian.com/a/cyrenenight>
+- 旧域名续费众筹：<https://ifdian.net/project/5f92101ad68311f1824c5254001e7c00>
+- 爱发电主页：<https://afdian.com/a/cyrenenight>
 - 请备注「旧域名续费」，便于单独统计
 
 > 赞助完全自愿。无论是否支持，新域名下的文档与脚本都会继续免费提供。
@@ -108,6 +109,7 @@ bash <(curl -sSL https://pve.ciriu.com/PVE-Tools.sh) --install
 - 文档站：<https://pve.ciriu.com>
 - 安装命令：`bash <(curl -sSL https://pve.ciriu.com/PVE-Tools.sh)`
 - GitHub：<https://github.com/PVE-Tools/PVE-Tools-9>
+- 旧域名续费众筹：<https://ifdian.net/project/5f92101ad68311f1824c5254001e7c00>
 - 爱发电：<https://afdian.com/a/cyrenenight>
 - QQ 群：`1031976463`（入群密码：`PVE Tools Pro`）
 - Telegram：<https://t.me/pvetools233>
