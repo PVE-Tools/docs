@@ -40,4 +40,4 @@ description: PVE Tools Pro 文档站的技术栈、基础设施与内容维护�
 | GitHub Discussions | [参与讨论](https://github.com/PVE-Tools/PVE-Tools-9/discussions) |
 | QQ 群 | `1031976463` |
 | Telegram | [@pvetools233](https://t.me/pvetools233) |
-| 邮箱 | `Support@u3u.icu` |
+| 邮箱 | `Support@ciriu.com` |

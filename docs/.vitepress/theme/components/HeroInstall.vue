@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { iconCheck, iconCopy, iconTerminal } from "../icons";
 
-const command = "bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh)";
+const command = "bash <(curl -sSL https://pve.ciriu.com/PVE-Tools.sh)";
 
 const copied = ref(false);
 

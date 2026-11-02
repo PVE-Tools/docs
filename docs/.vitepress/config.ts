@@ -44,7 +44,7 @@ export default defineConfig({
   },
 
   sitemap: {
-    hostname: "https://pve.u3u.icu",
+    hostname: "https://pve.ciriu.com",
   },
 
   themeConfig: {

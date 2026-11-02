@@ -55,7 +55,7 @@ export const teekConfig = defineTeekConfig({
   // ---------- 页脚 ----------
   social: [
     { icon: "mdi:github", name: "GitHub", link: "https://github.com/PVE-Tools/PVE-Tools-9" },
-    { icon: "mdi:email-outline", name: "邮件联系", link: "mailto:Support@u3u.icu" },
+    { icon: "mdi:email-outline", name: "邮件联系", link: "mailto:Support@ciriu.com" },
   ],
 
   footerGroup: [

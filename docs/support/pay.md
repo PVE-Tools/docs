@@ -44,7 +44,7 @@ description: 一对一远程或文字指导，按次或按时长收费，解决�
 
 | 渠道 | 联系方式 | 备注 |
 |:---|:---|:---|
-| 邮箱 | `Support@u3u.icu` | 标题请带 `[PVE付费]`，务必留下可联系方式 |
+| 邮箱 | `Support@ciriu.com` | 标题请带 `[PVE付费]`，务必留下可联系方式 |
 | 微信 | `Kilomaple2024` | 备注 `PVE付费` |
 | 爱发电 | [afdian.com/a/cyrenenight](https://afdian.com/a/cyrenenight) | 先留言说明需求 |
 

@@ -26,7 +26,7 @@ docs-next/
 │   │   ├── data/sponsors.ts     # 赞助名单 / 档位 / 定价数据
 │   │   └── theme/
 │   │       ├── index.ts         # 主题入口，注册全局组件
-│   │       ├── components/      # HomeInstall / SponsorList / SponsorTiers / PricingTable
+│   │       ├── components/      # HomeInstall / DomainMigrationNotice / SponsorList / SponsorTiers / PricingTable
 │   │       └── styles/index.css # 品牌色与中文排版覆盖
 │   ├── index.md                 # 首页（VitePress home 布局）
 │   ├── guide/                   # 使用指南、功能特性、常见问题、提交插件
@@ -34,7 +34,7 @@ docs-next/
 │   ├── changelog/               # 更新日志
 │   ├── support/                 # 赞助、付费技术支持
 │   ├── legal/                   # 用户协议、隐私政策 + 历史版本归档
-│   ├── about/                   # 关于本站、项目现状说明、Shell 版归档说明
+│   ├── about/                   # 关于本站、域名迁移公告、项目现状说明、Shell 版归档说明
 │   └── public/                  # 静态资源（Logo、二维码、PVE-Tools.sh、_headers）
 ├── wrangler.jsonc               # Cloudflare 部署配置
 └── netlify.toml                 # Netlify 部署配置

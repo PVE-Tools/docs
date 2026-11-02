@@ -25,6 +25,7 @@ export const nav: DefaultTheme.NavItem[] = [
         text: "项目",
         items: [
           { text: "关于本站", link: "/about/" },
+          { text: "域名迁移公告", link: "/about/domain-migration" },
           { text: "项目现状说明", link: "/about/go-version-status" },
         ],
       },

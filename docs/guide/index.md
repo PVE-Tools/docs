@@ -5,12 +5,16 @@ description: 查看 PVE Tools Pro 的安装命令、运行要求、高风险功�
 
 # 使用指南
 
+::: danger 域名迁移公告
+旧域名 `pve.u3u.icu` 已废弃并即将释放，请改用 **`https://pve.ciriu.com`**。请删除旧书签，并检查 hosts、DNS、反向代理与自动化脚本中的旧域名。**请自己仔细检查业务域名，因旧域名即将释放，释放后可能会被有心之人利用。** 详见[域名迁移公告](../about/domain-migration.md)。
+:::
+
 ## 快速开始
 
 在 PVE 终端中执行以下命令即可启动工具：
 
 ```bash
-bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh)
+bash <(curl -sSL https://pve.ciriu.com/PVE-Tools.sh)
 ```
 
 入口脚本会自动下载最新完整版主程序（按地区判断是否启用 GitHub 加速），默认回车直接启动，一次性使用不留任何文件。
@@ -29,7 +33,7 @@ bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh)
 **方式二：非交互参数一键安装**
 
 ```bash
-bash <(curl -sSL https://pve.u3u.icu/PVE-Tools.sh) --install
+bash <(curl -sSL https://pve.ciriu.com/PVE-Tools.sh) --install
 ```
 
 安装完成后即可随时运行：

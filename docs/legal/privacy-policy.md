@@ -125,4 +125,4 @@ Sentry 作为基础设施运营方，其服务器层面可能会记录入站请�
 
 GitHub Issues（仅限一般性问题，切勿在此提交安装标识哈希等敏感信息）：https://github.com/PVE-Tools/PVE-Tools-9/issues
 
-官方网站：https://pve.u3u.icu
+官方网站：https://pve.ciriu.com
